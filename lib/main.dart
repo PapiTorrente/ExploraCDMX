@@ -1285,10 +1285,8 @@ class _PPrincipalState extends State<PPrincipal> {
                       //nuestra variable que obtuvo los registros de Firebase
                       dataSource: _dataSource,
 
-                      //FUNCIONALIDAD DE PRESIONADO CORTO (EDITAR)
-                      onTap: null,
-                      //FUNCIONALIDAD DE PRESIONADO LARGO (ELIMINAR)
-                      onLongPress: null,
+                      //FUNCIONALIDAD DE PRESIONADO CORTO (EDITAR) onTap: null,
+                      //FUNCIONALIDAD DE PRESIONADO LARGO (ELIMINAR) onLongPress: null,
                     ),
                   )
               )
