@@ -235,6 +235,7 @@ class _PInicioSesionState extends State<PInicioSesion> {
       );
     }
 
+    //Inicio de Sesión
     @override
     Widget build(BuildContext context) {
       return Scaffold(
@@ -312,7 +313,7 @@ class _PInicioSesionState extends State<PInicioSesion> {
                 OutlinedButton(
                   onPressed: _RegistroHandler,
                   style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.all(16),
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 26),
                     side: BorderSide(color: Colors.pink, width: 2)
                   ),
                   child: Text(
@@ -569,8 +570,8 @@ class _PPrincipalState extends State<PPrincipal> {
                         decoration: BoxDecoration(
                             color: Colors.pinkAccent,
                             border: Border.all(
-                                width: 4,
-                                color: Colors.pink
+                                width: 6,
+                                color: Colors.pinkAccent
                             ),
                             borderRadius: BorderRadius.circular(8)
                         ),
@@ -584,12 +585,15 @@ class _PPrincipalState extends State<PPrincipal> {
                               //DECORACIÓN DEL CONTENEDOR DE LA IMAGEN EN LA TARJETA
                               //GRANDE
                               decoration: BoxDecoration(
-                                  border: Border.all(width: 4),
-                                  borderRadius: BorderRadius.circular(8)
+                                  border: Border.all(
+                                      width: 6,
+                                      color: Colors.pink.shade800
+                                  ),
+                                  borderRadius: BorderRadius.circular(2)
                               ),
 
                               //IMAGEN DE LA TARJETA GRANDE
-                              //SizedBoz forza a que la imagen ocupe el tamaño que
+                              //SizedBox forza a que la imagen ocupe el tamaño que
                               //queremos
                               child: SizedBox(
                                 width: double.infinity,
@@ -609,6 +613,8 @@ class _PPrincipalState extends State<PPrincipal> {
                               ),
                             ),
 
+                            SizedBox(height: 4,),
+
                             //TEXTO DEL TITULO DE LA TARJETA GRANDE
                             Align(
                                 alignment: Alignment.topLeft,
@@ -625,183 +631,118 @@ class _PPrincipalState extends State<PPrincipal> {
                                 )
                             ),
 
-                            //TEXTO DE LA DESCRIPCIÓN
                             Container(
-                              margin: EdgeInsets.only(top: 4, bottom: 4),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-
-                                  //CONTENEDOR DEL TEXTO DESCRIPCIÓN
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.text_snippet_outlined,
-                                        size: 24,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        "Descripción:",
-                                        style: TextStyle(
-                                            fontSize: 24,
-                                            color: Colors.black,
-                                            decoration: TextDecoration.none
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  //CONTENEDOR DEL TEXTO "DESCRIPCIÓN QUE DEBE CAMBIARSE DINÁMICAMENTE
-                                  Text(
-                                    "${doc['descripcion']}",
-                                    //Permite que ocupe más espacio si no es suficiente
-                                    softWrap: true,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                        decoration: TextDecoration.none
-                                    ),
-                                  )
-                                ],
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  left: BorderSide(color: Colors.pinkAccent, width: 4),
+                                  right: BorderSide(color: Colors.pinkAccent, width: 2),
+                                )
                               ),
-                            ),
-
-                            //TEXTO DE LA UBICACIÓN
-                            Container(
-                              margin: EdgeInsets.only(top: 4, bottom: 4),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-
-                                  //CONTENEDOR DEL TEXTO UBICACIÓN
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.location_on_outlined,
-                                        size: 24,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        "Ubicación:",
-                                        style: TextStyle(
-                                            fontSize: 24,
-                                            color: Colors.black,
-                                            decoration: TextDecoration.none
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  //CONTENEDOR DEL TEXTO "UBICACIÓN" QUE DEBE CAMBIARSE DINÁMICAMENTE
-                                  Text(
-                                    "${doc['ubicacion']}",
-                                    //Permite que ocupe más espacio si no es suficiente
-                                    softWrap: true,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                        decoration: TextDecoration.none
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-
-                            //TEXTO DEL HORARIO
-                            Container(
-                              margin: EdgeInsets.only(top: 4, bottom: 4),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-
-                                  //CONTENEDOR DEL TEXTO HORARIO
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Row(
+                                  //TEXTO DE LA DESCRIPCIÓN
+                                  Container(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Icon(
-                                          Icons.access_time_outlined,
-                                          size: 24,
-                                        ),
-                                        SizedBox(width: 8),
+
+                                        //CONTENEDOR DEL TEXTO "DESCRIPCIÓN QUE DEBE CAMBIARSE DINÁMICAMENTE
                                         Text(
-                                          "Horario:",
+                                          "${doc['descripcion']}",
+                                          //Permite que ocupe más espacio si no es suficiente
+                                          softWrap: true,
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.black,
+                                              decoration: TextDecoration.none
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 6,),
+
+                                  //TEXTO DE LA UBICACIÓN
+                                  Container(
+                                    margin: EdgeInsets.only(top: 4, bottom: 4),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+
+                                        //CONTENEDOR DEL TEXTO UBICACIÓN
+                                        Text(
+                                          "Ubicación:",
                                           style: TextStyle(
                                               fontSize: 24,
                                               color: Colors.black,
                                               decoration: TextDecoration.none
                                           ),
                                         ),
+
+                                        //CONTENEDOR DEL TEXTO "UBICACIÓN" QUE DEBE CAMBIARSE DINÁMICAMENTE
+                                        Text(
+                                          "${doc['ubicacion']}",
+                                          //Permite que ocupe más espacio si no es suficiente
+                                          softWrap: true,
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.black,
+                                              decoration: TextDecoration.none
+                                          ),
+                                        )
                                       ],
                                     ),
                                   ),
-
-                                  //CONTENEDOR DEL TEXTO "HORARIO" QUE DEBE CAMBIARSE DINÁMICAMENTE
-                                  Text(
-                                    "${doc['horario']}",
-                                    //Permite que ocupe más espacio si no es suficiente
-                                    softWrap: true,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                        decoration: TextDecoration.none
-                                    ),
-                                  )
                                 ],
                               ),
                             ),
 
+                            SizedBox(height: 6,),
+
                             //CONTENEDOR PARA EL ENLACE WEB
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.pink.shade800,
+                                  border: Border.all(
+                                      width: 8,
+                                      color: Colors.pink.shade800
+                                  ),
+                                  borderRadius: BorderRadius.circular(6)
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
 
-                                //ESPACIO PARA EL TEXTO DEL ENLACE WEB
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.link,
-                                      size: 24,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      "Sitio Web:",
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          color: Colors.black,
-                                          decoration: TextDecoration.none
+                                  //ESPACIO PARA EL BOTÓN DEL ENLACE WEB DÓNDE DEBE
+                                  //COLOCARSE EL ENLACE DINÁMICAMENTE
+                                  ElevatedButton(
+                                      style: TextButton.styleFrom(
+                                          backgroundColor: Colors.pinkAccent,
+                                          foregroundColor: Colors.black,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(4),
+                                          )
                                       ),
-                                    ),
-                                  ],
-                                ),
-
-                                //ESPACIO PARA EL BOTÓN DEL ENLACE WEB DÓNDE DEBE
-                                //COLOCARSE EL ENLACE DINÁMICAMENTE
-                                ElevatedButton(
-                                    style: TextButton.styleFrom(
-                                        backgroundColor: Colors.pink.shade600,
-                                        foregroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(4),
-                                        )
-                                    ),
-                                    onPressed: () => launchUrl(
-                                        enlace,
-                                        mode: LaunchMode.externalApplication
-                                    ),
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        eWeb,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold
+                                      onPressed: () => launchUrl(
+                                          enlace,
+                                          mode: LaunchMode.externalApplication
+                                      ),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Más información en su sitio web. ¡Presioname!",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                ),
-                              ],
+                                      )
+                                  ),
+                                ],
+                              ),
                             ),
 
                             //Empuja el espacio disponible para que los
@@ -815,7 +756,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                 //CONTENEDOR DEL BOTÓN PARA AGREGAR EVENTO
                                 ElevatedButton(
                                     style: TextButton.styleFrom(
-                                        backgroundColor: Colors.pink.shade600,
+                                        backgroundColor: Colors.pink.shade800,
                                         foregroundColor: Colors.black,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(4),
@@ -830,7 +771,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                     child: Text(
                                       "Agendar",
                                       style: TextStyle(
-                                          color: Colors.black,
+                                          color: Colors.white,
                                           fontWeight: FontWeight.bold
                                       ),
                                     )
@@ -840,7 +781,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                 //CONTENEDOR DEL BOTÓN PARA CERRAR LA TARJETA GRANDE
                                 ElevatedButton(
                                     style: TextButton.styleFrom(
-                                        backgroundColor: Colors.pink.shade600,
+                                        backgroundColor: Colors.pink.shade800,
                                         foregroundColor: Colors.black,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(4),
@@ -852,7 +793,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                     child: Text(
                                       "Cerrar",
                                       style: TextStyle(
-                                          color: Colors.black,
+                                          color: Colors.white,
                                           fontWeight: FontWeight.bold
                                       ),
                                     )
@@ -893,7 +834,7 @@ class _PPrincipalState extends State<PPrincipal> {
                             color: Colors.pinkAccent,
                             border: Border.all(
                                 width: 4,
-                                color: Colors.pink
+                                color: Colors.pinkAccent
                             ),
                             borderRadius: BorderRadius.circular(8)
                         ),
@@ -906,13 +847,13 @@ class _PPrincipalState extends State<PPrincipal> {
                             Align(
                                 alignment: Alignment.center,
                                 child: Container(
-                                  margin: EdgeInsets.only(bottom: 10),
+                                  padding: EdgeInsets.all(4),
                                   decoration: BoxDecoration(
-                                      color: Colors.pink.shade600,
+                                      color: Colors.pink.shade800,
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
                                           width: 3,
-                                          color: Colors.pink.shade700
+                                          color: Colors.pink.shade800
                                       )
                                   ),
                                   child: Column(
@@ -921,14 +862,15 @@ class _PPrincipalState extends State<PPrincipal> {
                                         "Día y hora de Inicio:",
                                         style: TextStyle(
                                             fontSize: 18,
-                                            color: Colors.black,
+                                            color: Colors.white,
                                             decoration: TextDecoration.none
                                         ),
                                       ),
+                                      SizedBox(height: 6),
                                       SizedBox(
                                         child: CupertinoCalendarPickerButton(
                                           buttonDecoration: PickerButtonDecoration(
-                                              backgroundColor: Colors.pink.shade700
+                                              backgroundColor: Colors.pinkAccent
                                           ),
                                           minimumDateTime: DateTime(now.year, now.month, now.day),
                                           maximumDateTime: DateTime(now.year + 4, now.month, now.day),
@@ -945,17 +887,20 @@ class _PPrincipalState extends State<PPrincipal> {
                                 )
                             ),
 
+                            SizedBox(height: 10),
+
                             //CONTENEDOR PARA EL TEXTO DE LA FECHA DE FINALIZACIÓN
                             Align(
                                 alignment: Alignment.center,
                                 child: Container(
+                                  padding: EdgeInsets.all(4),
                                   margin: EdgeInsets.only(bottom: 10),
                                   decoration: BoxDecoration(
-                                      color: Colors.pink.shade600,
+                                      color: Colors.pink.shade800,
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
                                           width: 3,
-                                          color: Colors.pink.shade700
+                                          color: Colors.pink.shade800
                                       )
                                   ),
                                   child: Column(
@@ -964,14 +909,15 @@ class _PPrincipalState extends State<PPrincipal> {
                                         "Día y hora de Finalización:",
                                         style: TextStyle(
                                             fontSize: 18,
-                                            color: Colors.black,
+                                            color: Colors.white,
                                             decoration: TextDecoration.none
                                         ),
                                       ),
+                                      SizedBox(height: 6),
                                       SizedBox(
                                         child: CupertinoCalendarPickerButton(
                                           buttonDecoration: PickerButtonDecoration(
-                                              backgroundColor: Colors.pink.shade700
+                                              backgroundColor: Colors.pinkAccent
                                           ),
                                           minimumDateTime: DateTime.now(),
                                           maximumDateTime: DateTime(2080, 12, 12),
@@ -992,16 +938,23 @@ class _PPrincipalState extends State<PPrincipal> {
                             Align(
                                 alignment: Alignment.center,
                                 child: Container(
+                                  padding: EdgeInsets.all(4),
                                   margin: EdgeInsets.only(bottom: 10),
                                   decoration: BoxDecoration(
-                                      color: Colors.pink.shade600,
+                                      color: Colors.pinkAccent,
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
-                                          width: 3,
-                                          color: Colors.pink.shade700
+                                          width: 8,
+                                          color: Colors.pink.shade800
                                       )
                                   ),
+
                                   child: ColorPicker(
+                                    pickersEnabled: const <ColorPickerType, bool>{
+                                      ColorPickerType.primary: true,
+                                      ColorPickerType.accent: false,
+                                    },
+                                    selectedPickerTypeColor: Colors.white,
                                     heading: Text(
                                       "Elige un color",
                                       style: TextStyle(
@@ -1036,8 +989,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                 //CONTENEDOR DEL BOTÓN DE FINALIZAR AGENDA
                                 ElevatedButton(
                                     style: TextButton.styleFrom(
-                                        backgroundColor: Colors.pink.shade600,
-                                        foregroundColor: Colors.black,
+                                        backgroundColor: Colors.pink.shade800,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(4),
                                         )
@@ -1059,7 +1011,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                     child: Text(
                                       "¡Todo Listo!",
                                       style: TextStyle(
-                                          color: Colors.black
+                                          color: Colors.white
                                       ),
                                     )
                                 ),
@@ -1067,8 +1019,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                 //CONTENEDOR DEL BOTÓN PARA CERRAR LA TARJETA DE AGENDAR
                                 ElevatedButton(
                                     style: TextButton.styleFrom(
-                                        backgroundColor: Colors.pink.shade600,
-                                        foregroundColor: Colors.black,
+                                        backgroundColor: Colors.pink.shade800,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(4),
                                         )
@@ -1079,7 +1030,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                     child: Text(
                                       "Cerrar",
                                       style: TextStyle(
-                                          color: Colors.black
+                                          color: Colors.white
                                       ),
                                     )
                                 ),
@@ -1172,8 +1123,8 @@ class _PPrincipalState extends State<PPrincipal> {
                   decoration: BoxDecoration(
                       color: Colors.pinkAccent,
                       border: Border.all(
-                          width: 4,
-                          color: Colors.pink
+                          width: 6,
+                          color: Colors.pinkAccent
                       ),
                       borderRadius: BorderRadius.circular(8)
                   ),
@@ -1188,8 +1139,11 @@ class _PPrincipalState extends State<PPrincipal> {
                         //DECORACIÓN DEL BORDE DEL CONTENEDOR DE LA IMAGEN EN LA
                         //TARJETA DE LA PANTALLA PRINCIPAL
                         decoration: BoxDecoration(
-                            border: Border.all(width: 4),
-                            borderRadius: BorderRadius.circular(8)
+                            border: Border.all(
+                                width: 4,
+                                color: Colors.pink.shade800
+                            ),
+                            borderRadius: BorderRadius.circular(2)
                         ),
 
                         //IMAGEN EN LA TARJETA DE LA PÁGINA PRINCIPAL
@@ -1238,6 +1192,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                     doc['etiqueta'],
                                     style: TextStyle(
                                         fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                         decoration: TextDecoration.underline,
                                         color: Colors.black
                                     ),
@@ -1248,7 +1203,7 @@ class _PPrincipalState extends State<PPrincipal> {
                               alignment: Alignment.bottomRight,
                               child: ElevatedButton(
                                   style: TextButton.styleFrom(
-                                      backgroundColor: Colors.pink.shade600,
+                                      backgroundColor: Colors.pink.shade800,
                                       foregroundColor: Colors.black,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(4),
@@ -1261,7 +1216,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                   child: Text(
                                     "Más",
                                     style: TextStyle(
-                                        color: Colors.black,
+                                        color: Colors.white,
                                         fontWeight: FontWeight.bold
                                     ),
                                   )
@@ -1302,7 +1257,7 @@ class _PPrincipalState extends State<PPrincipal> {
                     decoration: BoxDecoration(
                         border: Border.all(
                             width: 4,
-                            color: Colors.pink
+                            color: Colors.pink.shade800
                         ),
                         borderRadius: BorderRadius.circular(8)
                     ),
@@ -1395,7 +1350,7 @@ class _PPrincipalState extends State<PPrincipal> {
                   await ServicioAuth().signOut();
                 },
                 style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(16),
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 61),
                     backgroundColor: Colors.pinkAccent
                 ),
                 child: Text(
@@ -1414,12 +1369,12 @@ class _PPrincipalState extends State<PPrincipal> {
                     await ServicioAuth().borrarCuenta();
                   },
                   style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 30),
-                      backgroundColor: Colors.redAccent,
+                      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 56),
+                      backgroundColor: Colors.red,
                       side: BorderSide(color: Colors.red, width: 2)
                   ),
                   child: Text(
-                      "Borrar cuenta",
+                      "BORRAR CUENTA",
                       style: TextStyle(
                           fontSize: 18,
                           color: Colors.black
@@ -1434,7 +1389,7 @@ class _PPrincipalState extends State<PPrincipal> {
       /* FIN DE LA LISTA DE PÁGINAS */
 
       @override
-      Widget build(BuildContext context) { //Aqui va el aspecto visual.
+      Widget build(BuildContext context) {
 
         return Scaffold(
           /* CÓDIGO DE LA VISTA DE LA PÁGINA SELECCIONADA */
@@ -1450,9 +1405,9 @@ class _PPrincipalState extends State<PPrincipal> {
           /* CÓDIGO DE LA BARRA DE NAVEGACIÓN */
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _indiceMenu,
-            backgroundColor: Colors.pinkAccent,
+            backgroundColor: Colors.pink.shade600,
             selectedItemColor: Colors.black,
-            unselectedItemColor: Colors.black45,
+            unselectedItemColor: Colors.black38,
             onTap: _itemPresionado,
             items: const <BottomNavigationBarItem> [
               BottomNavigationBarItem(
