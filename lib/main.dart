@@ -1,8 +1,8 @@
 //Imports para usar Firebase
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_options.dart';
 
 //Imports para la página principal
 import 'package:flutter/material.dart'; //Import para usar widgets y hacer interfaces
@@ -1329,11 +1329,15 @@ class _PPrincipalState extends State<PPrincipal> {
                       //Indicamos de dónde obtendrá los datos, en este caso,
                       //nuestra variable que obtuvo los registros de Firebase
                       dataSource: _dataSource,
+
+                      //FUNCIONALIDAD DE PRESIONADO CORTO (EDITAR)
+                      onTap: null,
+                      //FUNCIONALIDAD DE PRESIONADO LARGO (ELIMINAR)
+                      onLongPress: null,
                     ),
                   )
               )
               /* FIN CÓDIGO DEL CALENDARIO EN LA PANTALLA SECUNDARIA*/
-
             ],
           ),
           /* FIN CÓDIGO PARA EL CALENDARIO */
@@ -1504,12 +1508,4 @@ class MeetingDataSource extends CalendarDataSource {
   Color getColor(int index) {
     return appointments![index].background;
   }
-}
-
-class Meeting {
-  Meeting(this.eventName, this.from, this.to, this.background);
-  String eventName;
-  DateTime from;
-  DateTime to;
-  Color background;
 }
