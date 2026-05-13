@@ -365,6 +365,28 @@ class _PPrincipalState extends State<PPrincipal> {
       //Indice del elemento en la lista _paginas usado para cambiar entre ellos.
       var _indiceMenu = 0;
 
+      //Variable que almacena la selección del usuario tomada de los radio buttons.
+      String? _seleccionAlcaldia;
+
+      //Lista de alcaldías. Se carga desde el principio.
+      List<String> _listaAlcaldias = [
+        "Álvaro Obregón",
+        "Azcapotzalco",
+        "Benito Juárez",
+        "Cuajimalpa",
+        "Coyoacán",
+        "Cuauhtémoc",
+        "Gustavo A. Madero",
+        "Iztacalco",
+        "Iztapalapa",
+        "Magdalena Contreras",
+        "Miguel Hidalgo",
+        "Tláhuac",
+        "Tlalpan",
+        "Venustiano Carranza",
+        "Xochimilco"
+      ];
+
       //Controlador de la animación de la página.
       final PageController _controladorPagina = PageController(initialPage: 0);
 
@@ -876,182 +898,152 @@ class _PPrincipalState extends State<PPrincipal> {
 
       /* FUNCIÓN PARA MOSTRAR LA "TARJETA" DE BÚSQUEDA */
       void _mostrarBuscador() {
-        //EL CÓDIGO A CONTINUACIÓN SÓLO ESTÁ DE ADORNO
         showDialog(
+          context: context,
           builder: (context) {
 
             /* CÓDIGO DE LA TARJETA GRANDE */
-            return Flex(
-              direction: Axis.horizontal,
-              children: [
-                Expanded(
-                    child: Container(
-                        padding: EdgeInsets.all(4),
-                        margin: EdgeInsets.all(10),
-                        //DECORACIÓN PARA EL CONTENEDOR DE LA TARJETA GRANDE
-                        decoration: BoxDecoration(
-                            color: Colors.pinkAccent,
-                            border: Border.all(
-                                width: 6,
-                                color: Colors.pinkAccent
-                            ),
-                            borderRadius: BorderRadius.circular(8)
-                        ),
+            return Dialog(
+              insetPadding: EdgeInsets.all(10),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              child: Container(
+                padding: EdgeInsets.all(10),
 
-                        //CONTENIDO DENTRO DE LA TARJETA GRANDE
-                        child: Column(
-                          children: [
-                            //CONTENEDOR PARA LA IMAGEN EN LA TARJETA GRANDE
-                            SizedBox(height: 4,),
+                //DECORACIÓN PARA EL CONTENEDOR DE LA TARJETA GRANDE
+                decoration: BoxDecoration(
+                  color: Colors.pinkAccent,
+                  border: Border.all(
+                      width: 6,
+                      color: Colors.pinkAccent
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
 
-                            //TEXTO DEL TITULO DE LA TARJETA GRANDE
-                            Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  "BLEH",
-                                  //Permite que ocupe más espacio si no es suficiente
-                                  softWrap: true,
-                                  style: TextStyle(
-                                      fontSize: 32,
-                                      color: Colors.black,
-                                      decoration: TextDecoration.none,
-                                      fontWeight: FontWeight.bold
-                                  ),
+                //CONTENIDO DENTRO DE LA TARJETA GRANDE
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min, // Se ajusta al contenido
+                  children: [
+                    StatefulBuilder(
+                      builder: (context, setInnerState) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          //Titulo
+                          Align(
+                            alignment: AlignmentGeometry.center,
+                            child: Text(
+                                "Filtro",
+                                softWrap: true,
+                                style: TextStyle(
+                                    fontSize: 32,
+                                    color: Colors.black,
+                                    decoration: TextDecoration.none,
+                                    fontWeight: FontWeight.bold
                                 )
                             ),
+                          ),
 
-                            Container(
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                    left: BorderSide(color: Colors.pinkAccent, width: 4),
-                                    right: BorderSide(color: Colors.pinkAccent, width: 2),
+                          //Subtítulo
+                          Text(
+                              "Por tipo de lugar:",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  decoration: TextDecoration.none
+                              )
+                          ),
+                          Text(
+                              "Descripción",
+                              softWrap: true,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                  decoration: TextDecoration.none
+                              )
+                          ),
+
+                          //Subtítulo
+                          Text(
+                              "Por alcaldía:",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  decoration: TextDecoration.none
+                              )
+                          ),
+                          SizedBox(
+                              height: 300,
+                              child: Container(
+                                  child: ListView(
+                                    padding: EdgeInsets.zero,
+                                    children: <Widget>[
+                                      for (var alcaldia in _listaAlcaldias)
+                                        RadioListTile<String>(
+                                          title: Text(alcaldia),
+                                          activeColor: Colors.black,
+                                          dense: true,
+                                          visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                                          value: alcaldia,
+                                          groupValue: _seleccionAlcaldia,
+                                          onChanged: (nuevoValor) {
+                                            setInnerState(() {
+                                              _seleccionAlcaldia = nuevoValor;
+                                            });
+                                          },
+                                        )
+                                    ],
                                   )
+                              )
+                          )
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 8),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          style: TextButton.styleFrom(
+                              backgroundColor: Colors.pink.shade800,
+                              foregroundColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontWeight: FontWeight.bold
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  //TEXTO DE LA DESCRIPCIÓN
-                                  Container(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-
-                                        //CONTENEDOR DEL TEXTO "DESCRIPCIÓN QUE DEBE CAMBIARSE DINÁMICAMENTE
-                                        Text(
-                                          "BLEH",
-                                          //Permite que ocupe más espacio si no es suficiente
-                                          softWrap: true,
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black,
-                                              decoration: TextDecoration.none
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-
-                                  SizedBox(height: 6,),
-
-                                  //TEXTO DE LA UBICACIÓN
-                                  Container(
-                                    margin: EdgeInsets.only(top: 4, bottom: 4),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-
-                                        //CONTENEDOR DEL TEXTO UBICACIÓN
-                                        Text(
-                                          "Ubicación:",
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              color: Colors.black,
-                                              decoration: TextDecoration.none
-                                          ),
-                                        ),
-
-                                        //CONTENEDOR DEL TEXTO "UBICACIÓN" QUE DEBE CAMBIARSE DINÁMICAMENTE
-                                        Text(
-                                          "BLEH",
-                                          //Permite que ocupe más espacio si no es suficiente
-                                          softWrap: true,
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black,
-                                              decoration: TextDecoration.none
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              )
+                          ),
+                          onPressed: null,
+                          child: Text("Agendar"),
+                        ),
+                        ElevatedButton(
+                          style: TextButton.styleFrom(
+                              backgroundColor: Colors.pink.shade800,
+                              foregroundColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontWeight: FontWeight.bold
                               ),
-                            ),
-
-                            SizedBox(height: 6,),
-
-                            //Empuja el espacio disponible para que los
-                            //botones siempre estén abajo.
-                            Expanded(child: SizedBox()),
-
-                            //ESPACIO PARA LOS BOTONES DE LA TARJETA GRANDE
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                //CONTENEDOR DEL BOTÓN PARA AGREGAR EVENTO
-                                ElevatedButton(
-                                    style: TextButton.styleFrom(
-                                        backgroundColor: Colors.pink.shade800,
-                                        foregroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(4),
-                                        )
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      "Agendar",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold
-                                      ),
-                                    )
-                                ),
-                                SizedBox(width: 8),
-
-                                //CONTENEDOR DEL BOTÓN PARA CERRAR LA TARJETA GRANDE
-                                ElevatedButton(
-                                    style: TextButton.styleFrom(
-                                        backgroundColor: Colors.pink.shade800,
-                                        foregroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(4),
-                                        )
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      "Cerrar",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold
-                                      ),
-                                    )
-                                )
-                              ],
-                            )
-                          ],
-                        )
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              )
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          child: Text("Cerrar"),
+                        ),
+                      ],
                     )
-                )
-              ],
+                  ],
+                ),
+              ),
             );
             /* FIN CÓDIGO DE LA TARJETA GRANDE */
-
           },
-          context: context,
         );
       }
       /* FIN FUNCIÓN ṔARA MOSTRAR LA "TARJETA" DE BÚSQUEDA */
