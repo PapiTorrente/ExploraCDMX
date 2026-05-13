@@ -372,8 +372,6 @@ class _PPrincipalState extends State<PPrincipal> {
       List<Widget> _paginas = [];
 
       /*VARIABLES PARA EL USO DEL CALENDARIO*/
-      var _reunionSeleccionadaL;
-
       //Fecha de inicio y final para antes de seleccionar.
       DateTime now = DateTime.now();
 
@@ -571,7 +569,7 @@ class _PPrincipalState extends State<PPrincipal> {
         }
       }
       /* FIN FUNCIÓN PARA ACTUALIZAR UN EVENTO DEL CALENDARIO */
-      
+
       /*FUNCION PARA GUARDAR UN EVENTO EN FIREBASE, RECIBE COMO ENTRADA
       * EL EVENTO PARA GUARDARLO EN FIREBASE*/
       Future<void> guardarEventoEnFirestore(Appointment evento) async {
@@ -667,271 +665,211 @@ class _PPrincipalState extends State<PPrincipal> {
       /* FIN FUNCIÓN PARA ELIMINAR UN EVENTO DEL CALENDARIO */
   /* FIN FUNCIONES DEL CALENDARIO */
 
-  /* FUNCIONES DEL ASPECTO VISUAL DE LA APLICACIÓN */
       /* FUNCIÓN PARA MOSTRAR LA TARJETA GRANDE */
       void _mostrarTarjetaGrande(doc) {
         //Guarda el string almacenado en el campo 'enlaceWeb' para los enlaces webs.
         String eWeb = '${doc['enlaceWeb']}';
+        String textoEWeb = eWeb.isNotEmpty
+            ? "Más información en su sitio web. ¡Presioname!"
+            : "Este lugar no tiene sitio web. ¡No me presiones!";
+
         //Cambia de tipo de dato 'String' a 'Uri' para ser manejado por
         //la dependencia url_launcher y ser enviado al navegador del dispositivo.
         final enlace = Uri.parse(eWeb);
         //Función asíncrona que muestra una ventana sobre toda la aplicación y
         //bloquea el resto de la aplicación.
         showDialog(
+          context: context,
           builder: (context) {
 
             /* CÓDIGO DE LA TARJETA GRANDE */
-            return Flex(
-              direction: Axis.horizontal,
-              children: [
-                Expanded(
-                    child: Container(
-                        padding: EdgeInsets.all(4),
-                        margin: EdgeInsets.all(10),
-                        //DECORACIÓN PARA EL CONTENEDOR DE LA TARJETA GRANDE
+            return Dialog(
+              insetPadding: EdgeInsets.all(10),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              child: Container(
+                padding: EdgeInsets.all(10),
+
+                //DECORACIÓN PARA EL CONTENEDOR DE LA TARJETA GRANDE
+                decoration: BoxDecoration(
+                  color: Colors.pinkAccent,
+                  border: Border.all(
+                      width: 6,
+                      color: Colors.pinkAccent
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+
+                //CONTENIDO DENTRO DE LA TARJETA GRANDE
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min, // Se ajusta al contenido
+                  children: [
+
+                    //CONTENEDOR PARA LA IMAGEN EN LA TARJETA GRANDE
+                    Container(
+                        height: 170,
+                        width: double.infinity,
+
+                        //DECORACIÓN DEL CONTENEDOR DE LA IMAGEN EN LA TARJETA
+                        //GRANDE
                         decoration: BoxDecoration(
-                            color: Colors.pinkAccent,
-                            border: Border.all(
-                                width: 6,
-                                color: Colors.pinkAccent
-                            ),
-                            borderRadius: BorderRadius.circular(8)
+                            border: Border.all(width: 6, color: Colors.pink.shade800),
+                            borderRadius: BorderRadius.circular(2)
                         ),
 
-                        //CONTENIDO DENTRO DE LA TARJETA GRANDE
+                        //IMAGEN DE LA TARJETA GRANDE
+                        //Descarga las imágenes desde el enlace y las guarda
+                        //en el caché del dispositivo.
+                        child: CachedNetworkImage(
+                          imageUrl: doc['imagen'],
+                          fit: BoxFit.cover,
+
+                          //PLACEHOLDER PARA LA ESPERA DE LA CARGA DE LA IMAGEN.
+                          placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                          //WIDGET DE ERROR SI NO SE CARGÓ LA IMAGEN.
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        )
+                    ),
+
+                    //TEXTO DEL TITULO DE LA TARJETA GRANDE
+                    // Scroll para evitar que el texto largo rompa la pantalla
+                    Flexible(
+                      child: SingleChildScrollView(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            //CONTENEDOR PARA LA IMAGEN EN LA TARJETA GRANDE
-                            Container(
-                              height: 170,
-                              //DECORACIÓN DEL CONTENEDOR DE LA IMAGEN EN LA TARJETA
-                              //GRANDE
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 6,
-                                      color: Colors.pink.shade800
-                                  ),
-                                  borderRadius: BorderRadius.circular(2)
-                              ),
-
-                              //IMAGEN DE LA TARJETA GRANDE
-                              //SizedBox forza a que la imagen ocupe el tamaño que
-                              //queremos
-                              child: SizedBox(
-                                width: double.infinity,
-                                height: 170,
-                                //Descarga las imágenes desde el enlace y las guarda
-                                //en el caché del dispositivo.
-                                child: CachedNetworkImage(
-                                  imageUrl: doc['imagen'],
-                                  fit: BoxFit.cover,
-                                  //PLACEHOLDER PARA LA ESPERA DE LA CARGA DE LA IMAGEN.
-                                  placeholder: (context, url) =>
-                                      CircularProgressIndicator(),
-                                  //WIDGET DE ERROR SI NO SE CARGÓ LA IMAGEN.
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                ),
-                              ),
+                            Text(
+                                "${doc['nombre']}",
+                                softWrap: true,
+                                style: TextStyle(
+                                    fontSize: 32,
+                                    color: Colors.black,
+                                    decoration: TextDecoration.none,
+                                    fontWeight: FontWeight.bold
+                                )
                             ),
+                            Text(
+                                "${doc['descripcion']}",
+                                softWrap: true,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                    decoration: TextDecoration.none
+                                )
+                            ),
+                            Text(
+                                "Ubicación:",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                    decoration: TextDecoration.none
+                                )
+                            ),
+                            Text(
+                                "${doc['ubicacion']}",
+                                softWrap: true,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                    decoration: TextDecoration.none
+                                )
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
-                            SizedBox(height: 4,),
+                    SizedBox(height: 8),
 
-                            //TEXTO DEL TITULO DE LA TARJETA GRANDE
-                            Align(
-                                alignment: Alignment.topLeft,
+                    // BOTONES (Se quedan fijos abajo)
+                    //CONTENEDOR PARA EL ENLACE WEB
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.pink.shade800,
+                          border: Border.all(
+                              width: 8,
+                              color: Colors.pink.shade800
+                          ),
+                          borderRadius: BorderRadius.circular(6)
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+
+                          //ESPACIO PARA EL BOTÓN DEL ENLACE WEB DÓNDE DEBE
+                          //COLOCARSE EL ENLACE DINÁMICAMENTE
+                          ElevatedButton(
+                              style: TextButton.styleFrom(
+                                  backgroundColor: Colors.pinkAccent,
+                                  foregroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(2),
+                                  )
+                              ),
+                              onPressed: () => launchUrl(
+                                  enlace,
+                                  mode: LaunchMode.externalApplication
+                              ),
+                              child: Align(
+                                alignment: Alignment.center,
                                 child: Text(
-                                  "${doc['nombre']}",
-                                  //Permite que ocupe más espacio si no es suficiente
-                                  softWrap: true,
+                                  "$textoEWeb",
                                   style: TextStyle(
-                                      fontSize: 32,
+                                      fontSize: 16,
                                       color: Colors.black,
-                                      decoration: TextDecoration.none,
                                       fontWeight: FontWeight.bold
                                   ),
-                                )
-                            ),
-
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  left: BorderSide(color: Colors.pinkAccent, width: 4),
-                                  right: BorderSide(color: Colors.pinkAccent, width: 2),
-                                )
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  //TEXTO DE LA DESCRIPCIÓN
-                                  Container(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-
-                                        //CONTENEDOR DEL TEXTO "DESCRIPCIÓN QUE DEBE CAMBIARSE DINÁMICAMENTE
-                                        Text(
-                                          "${doc['descripcion']}",
-                                          //Permite que ocupe más espacio si no es suficiente
-                                          softWrap: true,
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black,
-                                              decoration: TextDecoration.none
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-
-                                  SizedBox(height: 6,),
-
-                                  //TEXTO DE LA UBICACIÓN
-                                  Container(
-                                    margin: EdgeInsets.only(top: 4, bottom: 4),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-
-                                        //CONTENEDOR DEL TEXTO UBICACIÓN
-                                        Text(
-                                          "Ubicación:",
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              color: Colors.black,
-                                              decoration: TextDecoration.none
-                                          ),
-                                        ),
-
-                                        //CONTENEDOR DEL TEXTO "UBICACIÓN" QUE DEBE CAMBIARSE DINÁMICAMENTE
-                                        Text(
-                                          "${doc['ubicacion']}",
-                                          //Permite que ocupe más espacio si no es suficiente
-                                          softWrap: true,
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black,
-                                              decoration: TextDecoration.none
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            SizedBox(height: 6,),
-
-                            //CONTENEDOR PARA EL ENLACE WEB
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.pink.shade800,
-                                  border: Border.all(
-                                      width: 8,
-                                      color: Colors.pink.shade800
-                                  ),
-                                  borderRadius: BorderRadius.circular(6)
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-
-                                  //ESPACIO PARA EL BOTÓN DEL ENLACE WEB DÓNDE DEBE
-                                  //COLOCARSE EL ENLACE DINÁMICAMENTE
-                                  ElevatedButton(
-                                      style: TextButton.styleFrom(
-                                          backgroundColor: Colors.pinkAccent,
-                                          foregroundColor: Colors.black,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(4),
-                                          )
-                                      ),
-                                      onPressed: () => launchUrl(
-                                          enlace,
-                                          mode: LaunchMode.externalApplication
-                                      ),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Más información en su sitio web. ¡Presioname!",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            //Empuja el espacio disponible para que los
-                            //botones siempre estén abajo.
-                            Expanded(child: SizedBox()),
-
-                            //ESPACIO PARA LOS BOTONES DE LA TARJETA GRANDE
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                //CONTENEDOR DEL BOTÓN PARA AGREGAR EVENTO
-                                ElevatedButton(
-                                    style: TextButton.styleFrom(
-                                        backgroundColor: Colors.pink.shade800,
-                                        foregroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(4),
-                                        )
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      //FUNCION PARA MOSTRAR LA TARJETA PARA AGENDAR
-                                      //UN EVENTO, DADO UN EVENTO SELECCIONADO
-                                      _agregarAlCalendario(doc['nombre']);
-                                    },
-                                    child: Text(
-                                      "Agendar",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold
-                                      ),
-                                    )
                                 ),
-                                SizedBox(width: 8),
+                              )
+                          ),
+                        ],
+                      ),
+                    ),
 
-                                //CONTENEDOR DEL BOTÓN PARA CERRAR LA TARJETA GRANDE
-                                ElevatedButton(
-                                    style: TextButton.styleFrom(
-                                        backgroundColor: Colors.pink.shade800,
-                                        foregroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(4),
-                                        )
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      "Cerrar",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold
-                                      ),
-                                    )
-                                )
-                              ],
-                            )
-                          ],
-                        )
+                    SizedBox(height: 8),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          style: TextButton.styleFrom(
+                              backgroundColor: Colors.pink.shade800,
+                              foregroundColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontWeight: FontWeight.bold
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              )
+                          ),
+                          onPressed: () => _agregarAlCalendario(doc['nombre']),
+                          child: Text("Agendar"),
+                        ),
+                        ElevatedButton(
+                          style: TextButton.styleFrom(
+                              backgroundColor: Colors.pink.shade800,
+                              foregroundColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontWeight: FontWeight.bold
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              )
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          child: Text("Cerrar"),
+                        ),
+                      ],
                     )
-                )
-              ],
+                  ],
+                ),
+              ),
             );
             /* FIN CÓDIGO DE LA TARJETA GRANDE */
-
           },
-          context: context,
         );
       }
       /* FIN FUNCIÓN PARA MOSTRAR TARJETA GRANDE */
@@ -1125,166 +1063,156 @@ class _PPrincipalState extends State<PPrincipal> {
         //bloquea el resto de la aplicación.
         showDialog(
           builder: (context) {
-            return Flex(
-              direction: Axis.horizontal,
-              children: [
 
-                /* CÓDIGO DE LA TARJETA PARA AGREGAR AL CALENDARIO */
-                Expanded(
-                    child: Container(
-                        padding: EdgeInsets.all(4), // Hacia adentro
-                        margin: EdgeInsets.all(10), // Hacia afuera
-                        decoration: BoxDecoration(
-                            color: Colors.pinkAccent,
-                            border: Border.all(
-                                width: 4,
-                                color: Colors.pinkAccent
+            /* CÓDIGO DE LA TARJETA PARA AGREGAR AL CALENDARIO */
+            return Dialog(
+              insetPadding: EdgeInsets.all(10),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(8)),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    color: Colors.pinkAccent,
+                    border: Border.all(
+                        width: 4,
+                        color: Colors.pinkAccent
+                    ),
+                    borderRadius: BorderRadius.circular(8)
+                ),
+
+                //CONTENIDO DENTRO DE LA TARJETA DE AGREGAR AL CALENDARIO
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+
+                    //CONTENEDOR PARA EL TEXTO DE LA FECHA DE INICIO
+                    Container(
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                          color: Colors.pink.shade800,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                              width: 3,
+                              color: Colors.pink.shade800
+                          )
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Día y hora de Inicio:",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                decoration: TextDecoration.none
                             ),
-                            borderRadius: BorderRadius.circular(8)
+                          ),
+                          SizedBox(height: 6),
+                          SizedBox(
+                            child: CupertinoCalendarPickerButton(
+                              buttonDecoration: PickerButtonDecoration(
+                                  backgroundColor: Colors.pinkAccent
+                              ),
+                              minimumDateTime: DateTime(now.year, now.month, now.day),
+                              maximumDateTime: DateTime(now.year + 4, now.month, now.day),
+                              initialDateTime: DateTime.now(),
+                              currentDateTime: DateTime.now(),
+                              mode: CupertinoCalendarMode.dateTime,
+                              timeLabel: 'Inicio',
+                              onDateTimeChanged: (date) {
+                                _fijarFechaInicial(date);
+                              },),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 8),
+
+                    //CONTENEDOR PARA EL TEXTO DE LA FECHA DE FINALIZACIÓN
+                    Container(
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                          color: Colors.pink.shade800,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                              width: 3,
+                              color: Colors.pink.shade800
+                          )
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Día y hora de Finalización:",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                decoration: TextDecoration.none
+                            ),
+                          ),
+                          SizedBox(height: 6),
+                          SizedBox(
+                            child: CupertinoCalendarPickerButton(
+                              buttonDecoration: PickerButtonDecoration(
+                                  backgroundColor: Colors.pinkAccent
+                              ),
+                              minimumDateTime: DateTime.now(),
+                              maximumDateTime: DateTime(2080, 12, 12),
+                              initialDateTime: DateTime.now(),
+                              currentDateTime: DateTime.now(),
+                              mode: CupertinoCalendarMode.dateTime,
+                              timeLabel: 'Final',
+                              onDateTimeChanged: (date) {
+                                _fijarFechaFinal(date);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 8),
+
+                    //CONTENEDOR PARA LA ELECCIÓN DE COLOR
+                    Container(
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                          color: Colors.pinkAccent,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                              width: 8,
+                              color: Colors.pink.shade800
+                          )
+                      ),
+
+                      child: ColorPicker(
+                        pickersEnabled: const <ColorPickerType, bool>{
+                          ColorPickerType.primary: true,
+                          ColorPickerType.accent: false,
+                        },
+                        selectedPickerTypeColor: Colors.white,
+                        heading: Text(
+                          "Elige un color",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              decoration: TextDecoration.none
+                          ),
                         ),
+                        subheading: Text(
+                          "Elige la variación",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                              decoration: TextDecoration.none
+                          ),
+                        ),
+                        onColorChanged: (Color value) {
+                          _colorElegido = value;
+                        },
+                      ),
+                    ),
 
-                        //CONTENIDO DENTRO DE LA TARJETA DE AGREGAR AL CALENDARIO
-                        child: Column(
-                          children: [
-
-                            //CONTENEDOR PARA EL TEXTO DE LA FECHA DE INICIO
-                            Align(
-                                alignment: Alignment.center,
-                                child: Container(
-                                  padding: EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                      color: Colors.pink.shade800,
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                          width: 3,
-                                          color: Colors.pink.shade800
-                                      )
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "Día y hora de Inicio:",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.white,
-                                            decoration: TextDecoration.none
-                                        ),
-                                      ),
-                                      SizedBox(height: 6),
-                                      SizedBox(
-                                        child: CupertinoCalendarPickerButton(
-                                          buttonDecoration: PickerButtonDecoration(
-                                              backgroundColor: Colors.pinkAccent
-                                          ),
-                                          minimumDateTime: DateTime(now.year, now.month, now.day),
-                                          maximumDateTime: DateTime(now.year + 4, now.month, now.day),
-                                          initialDateTime: DateTime.now(),
-                                          currentDateTime: DateTime.now(),
-                                          mode: CupertinoCalendarMode.dateTime,
-                                          timeLabel: 'Inicio',
-                                          onDateTimeChanged: (date) {
-                                            _fijarFechaInicial(date);
-                                          },),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                            ),
-
-                            SizedBox(height: 10),
-
-                            //CONTENEDOR PARA EL TEXTO DE LA FECHA DE FINALIZACIÓN
-                            Align(
-                                alignment: Alignment.center,
-                                child: Container(
-                                  padding: EdgeInsets.all(4),
-                                  margin: EdgeInsets.only(bottom: 10),
-                                  decoration: BoxDecoration(
-                                      color: Colors.pink.shade800,
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                          width: 3,
-                                          color: Colors.pink.shade800
-                                      )
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "Día y hora de Finalización:",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.white,
-                                            decoration: TextDecoration.none
-                                        ),
-                                      ),
-                                      SizedBox(height: 6),
-                                      SizedBox(
-                                        child: CupertinoCalendarPickerButton(
-                                          buttonDecoration: PickerButtonDecoration(
-                                              backgroundColor: Colors.pinkAccent
-                                          ),
-                                          minimumDateTime: DateTime.now(),
-                                          maximumDateTime: DateTime(2080, 12, 12),
-                                          initialDateTime: DateTime.now(),
-                                          currentDateTime: DateTime.now(),
-                                          mode: CupertinoCalendarMode.dateTime,
-                                          timeLabel: 'Final',
-                                          onDateTimeChanged: (date) {
-                                            _fijarFechaFinal(date);
-                                          },),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                            ),
-
-                            //CONTENEDOR PARA LA ELECCIÓN DE COLOR
-                            Align(
-                                alignment: Alignment.center,
-                                child: Container(
-                                  padding: EdgeInsets.all(4),
-                                  margin: EdgeInsets.only(bottom: 10),
-                                  decoration: BoxDecoration(
-                                      color: Colors.pinkAccent,
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                          width: 8,
-                                          color: Colors.pink.shade800
-                                      )
-                                  ),
-
-                                  child: ColorPicker(
-                                    pickersEnabled: const <ColorPickerType, bool>{
-                                      ColorPickerType.primary: true,
-                                      ColorPickerType.accent: false,
-                                    },
-                                    selectedPickerTypeColor: Colors.white,
-                                    heading: Text(
-                                      "Elige un color",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.black,
-                                          decoration: TextDecoration.none
-                                      ),
-                                    ),
-                                    subheading: Text(
-                                      "Elige la variación",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.black,
-                                          decoration: TextDecoration.none
-                                      ),
-                                    ),
-                                    onColorChanged: (Color value) {
-                                      _colorElegido = value;
-                                    },
-                                  ),
-                                )
-                            ),
-
-                            //Empuja el espacio disponible para que los
-                            //botones siempre estén abajo.
-                            Expanded(child: SizedBox()),
+                    SizedBox(height: 8),
 
                             //ESPACIO PARA LOS BOTONES DE LA PANTALLA DE AGENDAR EVENTO
                             Row(
@@ -1309,45 +1237,42 @@ class _PPrincipalState extends State<PPrincipal> {
                                       _fechaFinal = DateTime.now();
                                       _colorElegido = Colors.pinkAccent;
 
-                                      //Cierra la tarjeta de agregar
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      "¡Todo Listo!",
-                                      style: TextStyle(
-                                          color: Colors.white
-                                      ),
-                                    )
-                                ),
-
-                                //CONTENEDOR DEL BOTÓN PARA CERRAR LA TARJETA DE AGENDAR
-                                ElevatedButton(
-                                    style: TextButton.styleFrom(
-                                        backgroundColor: Colors.pink.shade800,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(4),
-                                        )
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      "Cerrar",
-                                      style: TextStyle(
-                                          color: Colors.white
-                                      ),
-                                    )
-                                ),
-                              ],
+                              //Cierra la tarjeta de agregar
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "¡Todo Listo!",
+                              style: TextStyle(
+                                  color: Colors.white
+                              ),
                             )
-                          ],
-                        )
-                    )
-                )
-                /* FIN CÓDIGO DE LA TARJETA PARA AGREGAR AL CALENDARIO*/
+                        ),
 
-              ],
+                        //CONTENEDOR DEL BOTÓN PARA CERRAR LA TARJETA DE AGENDAR
+                        ElevatedButton(
+                            style: TextButton.styleFrom(
+                                backgroundColor: Colors.pink.shade800,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                )
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "Cerrar",
+                              style: TextStyle(
+                                  color: Colors.white
+                              ),
+                            )
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
             );
+            /* FIN CÓDIGO DE LA TARJETA PARA AGREGAR AL CALENDARIO*/
           },
           context: context,
         );
@@ -1850,6 +1775,7 @@ class _PPrincipalState extends State<PPrincipal> {
                   )
               )
               /* FIN CÓDIGO DEL CALENDARIO EN LA PANTALLA SECUNDARIA*/
+
             ],
           ),
           /* FIN CÓDIGO PARA EL CALENDARIO */
@@ -1958,7 +1884,7 @@ class _PPrincipalState extends State<PPrincipal> {
             children: _paginas,
           ),
           /* FIN CÓDIGO DE LA VISTA DE LA PÁGINA SELECCIONADA */
-          
+
           floatingActionButton: _indiceMenu == 0 ?
           FloatingActionButton(
               backgroundColor: Colors.pink.shade600,
