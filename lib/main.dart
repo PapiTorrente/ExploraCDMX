@@ -104,14 +104,14 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: ServicioAuth().userChanges, // Escucha el estado
-      builder: (context, snapshot) {
+      builder: (context, datosFirebase) {
         // Muestra una pantalla de carga mientras se decide
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (datosFirebase.connectionState == ConnectionState.waiting) {
           return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
 
         // Si el usuario SI está logueado, muestra la página de principa.
-        if (snapshot.hasData && snapshot.data != null) {
+        if (datosFirebase.hasData && datosFirebase.data != null) {
           return const PPrincipal(title: 'Hora de Explorar');
         }
 
@@ -371,6 +371,7 @@ class _PPrincipalState extends State<PPrincipal> {
       //Variable que almacena la selección del usuario tomada de los radio buttons.
       String? _seleccionAlcaldia;
 
+      //Lista de tipo de lugar. Se carga desde el principio.
       final List<String> _tipoLugar = [
         "Bar", "Cafetería", "Cine", "Espacio Cultural", "Espacio Público",
         "Espacio Recreativo", "Librería", "Museo", "Parque Público", "Restaurante"
@@ -384,11 +385,11 @@ class _PPrincipalState extends State<PPrincipal> {
         "Tlalpan", "Venustiano Carranza", "Xochimilco"
       ];
 
+      //Lista global que guarda los resultados de las consultas al aplicar o no un filtro.
+      List<QueryDocumentSnapshot> _resultadosLugares = [];
+
       //Controlador de la animación de la página.
       final PageController _controladorPagina = PageController(initialPage: 0);
-
-      //Lista de widgets que se mostrarán en la página.
-      List<Widget> _paginas = [];
 
       /*VARIABLES PARA EL USO DEL CALENDARIO*/
       //Fecha de inicio y final para antes de seleccionar.
@@ -453,14 +454,14 @@ class _PPrincipalState extends State<PPrincipal> {
         final user = FirebaseAuth.instance.currentUser;
         if(user == null) return;
         //Obtiene todos los registros de Firebase de la colección de eventos.
-        final snapshot = await FirebaseFirestore.instance
+        final datosFirebase = await FirebaseFirestore.instance
             .collection('eventos')
             .where('uid', isEqualTo: user.uid)
             .get();
 
         //Transforma los registros obtenidos de Firebase en una lista del tipo
         //appointment
-        final List<Appointment> eventosCargados = snapshot.docs.map((doc) {
+        final List<Appointment> eventosCargados = datosFirebase.docs.map((doc) {
           final data = doc.data();
           //Obtiene cada evento en forma de llave-valor para obtener sus elementos
           //y crear una nueva lista para visualizar los eventos en el calendario.
@@ -490,10 +491,10 @@ class _PPrincipalState extends State<PPrincipal> {
               'eventos');
 
           // Obtener todos los documentos de la colección
-          QuerySnapshot snapshot = await eventos.get();
+          QuerySnapshot datosFirebase = await eventos.get();
 
           // Recorrer e imprimir cada documento
-          for (var doc in snapshot.docs) {
+          for (var doc in datosFirebase.docs) {
             // Convertir a Map para acceder a los campos
             Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
@@ -1018,7 +1019,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                     )
                                 ),
                               ),
-                              alignment: AlignmentDirectional.bottomEnd,
+                              alignment: AlignmentDirectional.centerStart,
                               menuMaxHeight: 200,
                               isDense: true, //Menú desplegable con igual tamaño al botón.
                               isExpanded: true, //El texto no empuja al botón.
@@ -1044,7 +1045,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                     )
                                 ),
                                 onPressed: () {
-                                  _aplicarFiltros();
+                                  _aplicarFiltros(_seleccionTipo, _seleccionAlcaldia);
                                   Navigator.pop(context); // Close the filter card
                                 },
                                 child: Text("Filtrar"),
@@ -1065,6 +1066,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                     _seleccionTipo = null;
                                     _seleccionAlcaldia = null;
                                   });
+                                  _limpiarFiltro();
                                 },
                                 child: Text("Limpiar Filtro"),
                               ),
@@ -1083,9 +1085,35 @@ class _PPrincipalState extends State<PPrincipal> {
       }
       /* FIN FUNCIÓN ṔARA MOSTRAR LA "TARJETA" DE BÚSQUEDA */
 
-      void _aplicarFiltros() {
-        print("Filtros aplicados");
+      /* FUNCIÓN PARA FILTRAR */
+      void _aplicarFiltros(String? tipo, String? alcaldia) async {
+        Query consulta = FirebaseFirestore.instance
+                                    .collection('coleccion-lugares');
+        if(tipo != null) {
+          consulta = consulta.where("etiqueta", isEqualTo: tipo);
+        }
+
+        if(alcaldia != null) {
+          consulta = consulta.where("alcaldia", isEqualTo: alcaldia);
+        }
+
+        final datos = await consulta.get();
+
+        setState(() {
+          _resultadosLugares = datos.docs;
+        });
       }
+      /* FIN FUNCIÓN PARA FILTRAR */
+
+      /* FUNCIÓN PARA LIMPIAR FILTRO */
+      void _limpiarFiltro() async {
+        final datos = await FirebaseFirestore.instance.collection('coleccion-lugares').get();
+
+        setState(() {
+          _resultadosLugares = datos.docs;
+        });
+      }
+      /* FIN FUNCIÓN PARA LIMPIAR FILTRO */
 
       /* FUNCIÓN PARA AGREGAR EL LUGAR AL CALENDARIO, NECESITA COMO ENTRADA
       * EL NOMBRE DEL EVENTO A AGREGAR AL CALENDARIO*/
@@ -1569,267 +1597,227 @@ class _PPrincipalState extends State<PPrincipal> {
         });
       }
       /* FIN DE FUNCIONES PARA CAMBIAR DE PANTALLA EN EL MENÚ BAJO */
-  /* FIN FUNCIONES DEL ASPECTO VISUAL DE LA APLICACIÓN */
 
-  /* ASPECTO VISUAL DE LA APLICACIÓN */
-      /* LISTA DE PÁGINAS QUE ES LLENADO A FUTURO DE MANERA ASÍNCRONA */
-      Future<void> _entrada() async {
-        //Variable para obtener las colecciones de lugares para agendar en la
-        //aplicación
-        final snapshot = await FirebaseFirestore.instance.collection('coleccion-lugares').get();
-        _paginas = [
-          //AQUI AGREGAR EL COLOR DE LA PÁGINA
+      /* CÓDIGO PARA LA TARJETA ROSA QUE ES LLENADA AUTOMÁTICAMENTE EN LA PÁGINA PRINCIPAL */
+      Widget _tarjetaRosaInicio(var doc) {
+        return Container(
+          height: 160,
+          //ESPACIO HACIA ADENTRO DE LA TARJETA EN LA PANTALLA PRINCIPAL
+          padding: EdgeInsets.all(4),
+          //ESPACIO HACIA AFUERA DE LA TARJETA EN LA PANTALLA PRINCIPAL
+          margin: EdgeInsets.all(10),
+          //DECORACIÓN DEL BORDE DEL CONTENEDOR DE TODA LA TARJETA EN LA PANTALLA PRINCIPAL
+          decoration: BoxDecoration(
+              color: Colors.pinkAccent,
+              border: Border.all(
+                  width: 6,
+                  color: Colors.pinkAccent
+              ),
+              borderRadius: BorderRadius.circular(8)
+          ),
 
-          /* CÓDIGO PARA LA PANTALLA PRINCIPAL */
-          ListView(
+          //CONTENIDO DENTRO DE LA TARJETA EN LA PANTALLAA PRINCIPAL
+          child: Column(
             children: [
 
-              //CONTENEDOR DEL SALUDO EN LA PANTALLA PRINCIPAL
+              //CONTENEDOR DE LA IMAGEN EN LA TARJETA DE LA PANTALLA PRINCIPAL
               Container(
-                  padding: EdgeInsets.only(top: 18),
-                  child: Column(
-                      children: [
-                        //TEXTOS DEL SALUDO EN LA PANTALLA PRINCIPAL. SON ESTÁTICOS.
-                        Text(
-                            "¡Hola!",
-                            style: TextStyle(
-                                fontFamily: 'Roboto',
-                                fontSize: 50,
-                                fontWeight: FontWeight.bold
-                            )
-                        ),
-                        Text(
-                            "¿A dónde irás hoy?",
-                            style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold
-                            )
-                        )
-                      ]
+                height: 80,
+                //DECORACIÓN DEL BORDE DEL CONTENEDOR DE LA IMAGEN EN LA
+                //TARJETA DE LA PANTALLA PRINCIPAL
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 4,
+                        color: Colors.pink.shade800
+                    ),
+                    borderRadius: BorderRadius.circular(2)
+                ),
+
+                //IMAGEN EN LA TARJETA DE LA PÁGINA PRINCIPAL
+                //SizedBox forza a que la imagen ocupe el tamaño que queremos
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 80,
+                  //Descarga las imágenes desde el enlace y las guarda en el
+                  //caché del dispositivo.
+                  child: CachedNetworkImage(
+                    imageUrl: doc['imagen'],
+                    fit: BoxFit.cover,
+                    //WIDGET DE ERROR SI NO SE CARGÓ LA IMAGEN.
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
+              ),
+
+              //TEXTO DEL TITULO DE LA TARJETA EN LA PÁNTALLA PRINCIPAL
+              Flexible(
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      doc['nombre'],
+                      //Permite que si el texto no es suficiente, se muestren
+                      //tres puntos.
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
+                      ),
+                    ),
                   )
               ),
 
-              /* CÓDIGO DE LA TARJETA QUE SE LLENA CON LOS ELEMENTOS DE 'snapshot'
-          * OBTENIDOS DE LA BASE DE DATOS EN FIREBASE */
-              for (var doc in snapshot.docs)
-                Container(
-                  height: 160,
-                  //ESPACIO HACIA ADENTRO DE LA TARJETA EN LA PANTALLA PRINCIPAL
-                  padding: EdgeInsets.all(4),
-                  //ESPACIO HACIA AFUERA DE LA TARJETA EN LA PANTALLA PRINCIPAL
+              //CONTENEDOR DEL TEXTO Y BOTÓN DE LA TARJETA EN LA PANTALLA
+              //PRINCIPAL
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Text(
+                            doc['etiqueta'],
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                                color: Colors.black
+                            ),
+                          ),
+                        )
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: ElevatedButton(
+                          style: TextButton.styleFrom(
+                              backgroundColor: Colors.pink.shade800,
+                              foregroundColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              )
+                          ),
+                          onPressed: (){
+                            //Llamada a la función '_mostrarTarjetaGrande'
+                            _mostrarTarjetaGrande(doc);
+                          },
+                          child: Text(
+                            "Más",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold
+                            ),
+                          )
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
+      }
+      /* FIN CÓDIGO PARA LA TARJETA ROSA */
+
+      /* CÓDIGO PARA LA PANTALLA DEL CALENDARIO */
+      Widget _paginaCalendario() {
+        return Column(
+          children: [
+            //TEXTO ESTÁTICO EN LA PANTALLA DEL CALENDARIO
+            Container(
+              padding: EdgeInsets.only(top: 18),
+              child: Text(
+                  "Calendario",
+                  style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold
+                  )
+              ),
+            ),
+
+            /* CÓDIGO DEL CALENDARIO EN LA PANTALLA SECUNDARIA */
+            Flexible(
+                child: Container(
                   margin: EdgeInsets.all(10),
-                  //DECORACIÓN DEL BORDE DEL CONTENEDOR DE TODA LA TARJETA EN LA PANTALLA PRINCIPAL
+                  //DECORACÍON DE LOS BORDES DEL CONTENEDOR DEL CALENDARIO
                   decoration: BoxDecoration(
-                      color: Colors.pinkAccent,
                       border: Border.all(
-                          width: 6,
-                          color: Colors.pinkAccent
+                          width: 4,
+                          color: Colors.pink.shade800
                       ),
                       borderRadius: BorderRadius.circular(8)
                   ),
 
-                  //CONTENIDO DENTRO DE LA TARJETA EN LA PANTALLAA PRINCIPAL
-                  child: Column(
-                    children: [
+                  //CALENDARIO
+                  child: SfCalendar(
+                    view: CalendarView.month,
+                    initialSelectedDate: DateTime.now(),
+                    headerStyle: CalendarHeaderStyle(
+                        backgroundColor: Colors.pinkAccent,
+                        textStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black
+                        )
+                    ),
+                    cellBorderColor: Colors.transparent,
+                    todayHighlightColor: Colors.pink,
+                    selectionDecoration: BoxDecoration(
+                        color: Colors.transparent
+                    ),
+                    monthViewSettings: MonthViewSettings(
+                      showAgenda: true,
+                    ),
+                    //Indicamos de dónde obtendrá los datos, en este caso,
+                    //nuestra variable que obtuvo los registros de Firebase
+                    dataSource: _dataSource,
 
-                      //CONTENEDOR DE LA IMAGEN EN LA TARJETA DE LA PANTALLA PRINCIPAL
-                      Container(
-                        height: 80,
-                        //DECORACIÓN DEL BORDE DEL CONTENEDOR DE LA IMAGEN EN LA
-                        //TARJETA DE LA PANTALLA PRINCIPAL
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 4,
-                                color: Colors.pink.shade800
-                            ),
-                            borderRadius: BorderRadius.circular(2)
-                        ),
-
-                        //IMAGEN EN LA TARJETA DE LA PÁGINA PRINCIPAL
-                        //SizedBox forza a que la imagen ocupe el tamaño que queremos
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 80,
-                          //Descarga las imágenes desde el enlace y las guarda en el
-                          //caché del dispositivo.
-                          child: CachedNetworkImage(
-                            imageUrl: doc['imagen'],
-                            fit: BoxFit.cover,
-                            //WIDGET DE ERROR SI NO SE CARGÓ LA IMAGEN.
-                            errorWidget: (context, url, error) => Icon(Icons.error),
-                          ),
-                        ),
-                      ),
-
-                      //TEXTO DEL TITULO DE LA TARJETA EN LA PÁNTALLA PRINCIPAL
-                      Flexible(
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              doc['nombre'],
-                              //Permite que si el texto no es suficiente, se muestren
-                              //tres puntos.
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black
-                              ),
-                            ),
-                          )
-                      ),
-
-                      //CONTENEDOR DEL TEXTO Y BOTÓN DE LA TARJETA EN LA PANTALLA
-                      //PRINCIPAL
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text(
-                                    doc['etiqueta'],
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        decoration: TextDecoration.underline,
-                                        color: Colors.black
-                                    ),
-                                  ),
-                                )
-                            ),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: ElevatedButton(
-                                  style: TextButton.styleFrom(
-                                      backgroundColor: Colors.pink.shade800,
-                                      foregroundColor: Colors.black,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                      )
-                                  ),
-                                  onPressed: (){
-                                    //Llamada a la función '_mostrarTarjetaGrande'
-                                    _mostrarTarjetaGrande(doc);
-                                  },
-                                  child: Text(
-                                    "Más",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold
-                                    ),
-                                  )
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
+                    //FUNCIONALIDAD DE PRESIONADO CORTO (EDITAR)
+                    onTap: (CalendarTapDetails detallesCalendarioOT) {
+                      if(detallesCalendarioOT.appointments != null && detallesCalendarioOT.appointments!.isNotEmpty) { //Confirmamos que no es nulo ni vacío.
+                        //Obtenemos la reunión tocada.
+                        final Appointment reunion = detallesCalendarioOT.appointments![0];
+                        //Llamamos a la función de edición con la info. de la reunión a editar.
+                        _editarReunion(reunion);
+                      }
+                    },
+                    //FUNCIONALIDAD DE PRESIONADO LARGO (ELIMINAR)
+                    onLongPress: (CalendarLongPressDetails detallesCalendarioOLP) {
+                      if(detallesCalendarioOLP.appointments != null && detallesCalendarioOLP.appointments!.isNotEmpty) { //Confirmamos que no es nulo ni vacío.
+                        //Obtenemos la reunión tocada.
+                        final Appointment reunion = detallesCalendarioOLP.appointments![0];
+                        //Llamamos a la función de eliminación con la info. de la reunión como parámetro.
+                        _confirmarEliminacion(reunion);
+                      }
+                    },
                   ),
                 )
-              /* FIN CÓDIGO DE LA TARJETA EN LA PANTALLA PRINCIPAL */
+            )
+            /* FIN CÓDIGO DEL CALENDARIO EN LA PANTALLA SECUNDARIA*/
 
-            ],
-          ),
-          /* FIN CÓDIGO PARA LA PANTALLA PRINCIPAL */
+          ],
+        );
+      }
+      /* FIN CÓDIGO PARA EL CALENDARIO */
 
-          /* CÓDIGO PARA LA PANTALLA DEL CALENDARIO */
-          Column(
-            children: [
-              //TEXTO ESTÁTICO EN LA PANTALLA DEL CALENDARIO
-              Container(
-                padding: EdgeInsets.only(top: 18),
-                child: Text(
-                    "Calendario",
-                    style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold
-                    )
-                ),
-              ),
-
-              /* CÓDIGO DEL CALENDARIO EN LA PANTALLA SECUNDARIA */
-              Flexible(
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    //DECORACÍON DE LOS BORDES DEL CONTENEDOR DEL CALENDARIO
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 4,
-                            color: Colors.pink.shade800
-                        ),
-                        borderRadius: BorderRadius.circular(8)
-                    ),
-
-                    //CALENDARIO
-                    child: SfCalendar(
-                      view: CalendarView.month,
-                      initialSelectedDate: DateTime.now(),
-                      headerStyle: CalendarHeaderStyle(
-                          backgroundColor: Colors.pinkAccent,
-                          textStyle: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black
-                          )
-                      ),
-                      cellBorderColor: Colors.transparent,
-                      todayHighlightColor: Colors.pink,
-                      selectionDecoration: BoxDecoration(
-                          color: Colors.transparent
-                      ),
-                      monthViewSettings: MonthViewSettings(
-                        showAgenda: true,
-                      ),
-                      //Indicamos de dónde obtendrá los datos, en este caso,
-                      //nuestra variable que obtuvo los registros de Firebase
-                      dataSource: _dataSource,
-
-                      //FUNCIONALIDAD DE PRESIONADO CORTO (EDITAR)
-                      onTap: (CalendarTapDetails detallesCalendarioOT) {
-                        if(detallesCalendarioOT.appointments != null && detallesCalendarioOT.appointments!.isNotEmpty) { //Confirmamos que no es nulo ni vacío.
-                          //Obtenemos la reunión tocada.
-                          final Appointment reunion = detallesCalendarioOT.appointments![0];
-                          //Llamamos a la función de edición con la info. de la reunión a editar.
-                          _editarReunion(reunion);
-                        }
-                      },
-                      //FUNCIONALIDAD DE PRESIONADO LARGO (ELIMINAR)
-                      onLongPress: (CalendarLongPressDetails detallesCalendarioOLP) {
-                        if(detallesCalendarioOLP.appointments != null && detallesCalendarioOLP.appointments!.isNotEmpty) { //Confirmamos que no es nulo ni vacío.
-                          //Obtenemos la reunión tocada.
-                          final Appointment reunion = detallesCalendarioOLP.appointments![0];
-                          //Llamamos a la función de eliminación con la info. de la reunión como parámetro.
-                          _confirmarEliminacion(reunion);
-                        }
-                      },
-                    ),
-                  )
-              )
-              /* FIN CÓDIGO DEL CALENDARIO EN LA PANTALLA SECUNDARIA*/
-
-            ],
-          ),
-          /* FIN CÓDIGO PARA EL CALENDARIO */
-
-          /* CÓDIGO PARA LA PANTALLA DE PERFIL DE USUARIO */
-          Column(
+      /* CÓDIGO PARA LA PANTALLA DE PERFIL DE USUARIO */
+      Widget _paginaUsuario() {
+        return Column(
             children: [
               Container(
-                padding: EdgeInsets.only(top: 18),
-                child: Text(
-                  "Tu Cuenta",
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold
+                  padding: EdgeInsets.only(top: 18),
+                  child: Text(
+                      "Tu Cuenta",
+                      style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold
+                      )
                   )
-                )
               ),
               Container(
                 padding: EdgeInsets.all(3),
                 child: Text(
                   "$correo",
                   style: TextStyle(
-                    fontSize: 20
+                      fontSize: 20
                   ),
                 ),
               ),
@@ -1896,9 +1884,20 @@ class _PPrincipalState extends State<PPrincipal> {
                   )
               ),
             ]
-          )
-          /* FIN CÓDIGO PARA LA PANTALLA DE PERFIL DE USUARIO */
-        ];
+        );
+      }
+      /* FIN CÓDIGO PARA LA PANTALLA DE PERFIL DE USUARIO */
+  /* FIN FUNCIONES DEL ASPECTO VISUAL DE LA APLICACIÓN */
+
+  /* ASPECTO VISUAL DE LA APLICACIÓN */
+      /* LISTA DE PÁGINAS QUE ES LLENADO A FUTURO DE MANERA ASÍNCRONA */
+      Future<void> _entrada() async {
+        //Variable para obtener las colecciones de lugares para agendar en la
+        //aplicación
+        final datos = await FirebaseFirestore.instance.collection('coleccion-lugares').get();
+        setState(() {
+          _resultadosLugares = datos.docs;
+        });
       }
       /* FIN DE LA LISTA DE PÁGINAS */
 
@@ -1912,7 +1911,49 @@ class _PPrincipalState extends State<PPrincipal> {
             onPageChanged: _paginaCambiada,
             //Physics evita el scroll horizontal para que sea solo por el menu
             physics: const NeverScrollableScrollPhysics(),
-            children: _paginas,
+            children: [
+              /* CÓDIGO PARA LA PANTALLA PRINCIPAL */
+              ListView(
+                children: [
+
+                  //CONTENEDOR DEL SALUDO EN LA PANTALLA PRINCIPAL
+                  Container(
+                      padding: EdgeInsets.only(top: 18),
+                      child: Column(
+                          children: [
+                            //TEXTOS DEL SALUDO EN LA PANTALLA PRINCIPAL. SON ESTÁTICOS.
+                            Text(
+                                "¡Hola!",
+                                style: TextStyle(
+                                    fontFamily: 'Roboto',
+                                    fontSize: 50,
+                                    fontWeight: FontWeight.bold
+                                )
+                            ),
+                            Text(
+                                "¿A dónde irás hoy?",
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold
+                                )
+                            )
+                          ]
+                      )
+                  ),
+
+                  /* CÓDIGO DE LA TARJETA QUE SE LLENA CON LOS ELEMENTOS DE 'datosFirebase'
+                  * OBTENIDOS DE LA BASE DE DATOS EN FIREBASE */
+                  for (var doc in _resultadosLugares)
+                    _tarjetaRosaInicio(doc)
+                  /* FIN CÓDIGO DE LA TARJETA EN LA PANTALLA PRINCIPAL */
+
+                ],
+              ),
+              /* FIN CÓDIGO PARA LA PANTALLA PRINCIPAL */
+
+              _paginaCalendario(),
+              _paginaUsuario()
+            ],
           ),
           /* FIN CÓDIGO DE LA VISTA DE LA PÁGINA SELECCIONADA */
 
