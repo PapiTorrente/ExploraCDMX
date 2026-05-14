@@ -1044,7 +1044,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                     )
                                 ),
                                 onPressed: () {
-                                  //_aplicarFiltros();
+                                  _aplicarFiltros();
                                   Navigator.pop(context); // Close the filter card
                                 },
                                 child: Text("Filtrar"),
@@ -1082,6 +1082,10 @@ class _PPrincipalState extends State<PPrincipal> {
         );
       }
       /* FIN FUNCIÓN ṔARA MOSTRAR LA "TARJETA" DE BÚSQUEDA */
+
+      void _aplicarFiltros() {
+        print("Filtros aplicados");
+      }
 
       /* FUNCIÓN PARA AGREGAR EL LUGAR AL CALENDARIO, NECESITA COMO ENTRADA
       * EL NOMBRE DEL EVENTO A AGREGAR AL CALENDARIO*/
