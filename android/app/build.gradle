@@ -1,5 +1,6 @@
 plugins {
-    id "com.android.application"
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
@@ -11,7 +12,7 @@ dependencies {
 }
 
 android {
-    namespace = "com.urbenia.explora_cdmx"
+    namespace = "com.castilla.exploracdmx"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -25,12 +26,12 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.urbenia.explora_cdmx"
+        applicationId = "com.castilla.exploracdmx"
         minSdkVersion = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        archivesBaseName = "explora_cdmx"
+        archivesBaseName = "exploracdmx"
     }
 
     buildTypes {

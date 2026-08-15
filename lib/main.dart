@@ -4,6 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 
+//Imports para usar el inicio de sesión con Google
+import 'package:google_sign_in/google_sign_in.dart';
+
+//Import para usar el logo de Google
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 //Imports para la página principal
 import 'package:flutter/material.dart'; //Import para usar widgets y hacer interfaces
 import 'package:url_launcher/url_launcher.dart'; //Import para abrir enlaces.
@@ -19,6 +25,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await GoogleSignIn.instance.initialize();
   runApp(const ExploraCDMXApp());
 }
 
@@ -43,6 +50,9 @@ class ExploraCDMXApp extends StatelessWidget {
 /* ESPACIO PARA LA AUTENTICACIÓN / INICIO DE SESIÓN */
 class ServicioAuth {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  //OBTENER EL ESTADO DE AUTENTICACIÓN
+  Stream<User?> get userChanges => _auth.authStateChanges();
 
   //FUNCIÓN DE REGISTRO
   Future<User?> signUp({required String email, required String password}) async {
@@ -74,6 +84,27 @@ class ServicioAuth {
     }
   }
 
+  //FUNCIÓN INICIO DE SESIÓN CON GOOGLE
+  Future<User?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? account = await GoogleSignIn.instance.authenticate(
+        scopeHint: ['email'],
+      );
+      if (account == null) return null;
+
+      final GoogleSignInAuthentication googleAuth = await account.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      UserCredential result = await _auth.signInWithCredential(credential);
+      return result.user;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   //FUNCIÓN PARA OBTENER CORREO DE USUARIO
   Future<User?> borrarCuenta() async {
     await _auth.currentUser?.delete();
@@ -89,17 +120,19 @@ class ServicioAuth {
   //FUNCIÓN DE FIN DE SESIÓN
   Future<User?> signOut() async {
     await _auth.signOut();
+    await GoogleSignIn.instance.signOut();
     return null;
   }
-
-  //OBTENER EL ESTADO DE AUTENTICACIÓN
-  Stream<User?> get userChanges => _auth.authStateChanges();
 }
 
 /* CLASE PARA MOSTRAR PRIMERO LA PANTALLA DE INICIO O EL INICIO DE LA APP */
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
+//============================================================//
+// Decisión de si mostrar primero página de inicio de sesión  //
+// O página principal de la app                               //
+//============================================================//
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -122,6 +155,9 @@ class AuthWrapper extends StatelessWidget {
   }
 }
 
+//============================================================//
+// PÁGINA DE INICIO DE SESIÓN                                 //
+//============================================================//
 class PInicioSesion extends StatefulWidget {
   const PInicioSesion({super.key});
 
@@ -150,6 +186,7 @@ class _PInicioSesionState extends State<PInicioSesion> {
 
       if(email.isEmpty || password.isEmpty) {
         _mostrarSnackBar("Error. Correo y contraseña obligatorios.");
+        return;
       }
 
       try {
@@ -176,38 +213,27 @@ class _PInicioSesionState extends State<PInicioSesion> {
     }
     /* FIN MÉTODO DE INICIO DE SESIÓN */
 
-    /* MÉTODO DE REGISTRO DE USUARIO */
-    void _RegistroHandler() async {
-      final email = _controladorCorreo.text.trim();
-      final password = _controladorContra.text.trim();
-
-      if(email.isEmpty) {
-        _mostrarSnackBar("Error. No colocaste un correo.");
-      }
-
-      if(password.length < 8) {
-        _mostrarSnackBar("Error. La contraseña es menor a 8 caracteres");
+    /* MÉTODO DE INICIO DE SESIÓN CON GOOGLE */
+    void _signInWithGoogle() async {
+      try {
+        User? user = await ServicioAuth().signInWithGoogle();
+        if (user != null) {
+          _mostrarSnackBar("Sesión iniciada con Google.", isError: false);
+        }
+      } catch (e) {
+        _mostrarSnackBar("Error al iniciar sesión con Google.");
         return;
       }
+    }
+    /* FIN MÉTODO DE INICIO DE SESIÓN CON GOOGLE */
 
-      try {
-        User? user = await ServicioAuth().signUp(
-            email: email, password: password);
-
-        if (user != null) {
-          _mostrarSnackBar("Registro exitoso.", isError: false);
-        }
-      } on FirebaseAuthException catch (e) {
-        String mensajeError = "";
-        if(e.code == 'email-already-in-use') {
-          mensajeError = "Correo en uso. Intente otro correo.";
-        } else if(e.code == 'invalid-email') {
-          mensajeError = "No es un correo.";
-        }
-        _mostrarSnackBar(mensajeError);
-      } catch (e) {
-        _mostrarSnackBar("Ha sucedido un error. Intente nuevamente.");
-      }
+    /* MÉTODO DE REGISTRO DE USUARIO */
+    // Lleva a la página de registro.
+    void _RegistroHandler() async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PRegistroUsuario()),
+      );
     }
     /* FIN MÉTODO DE REGISTRO DE USUARIO */
 
@@ -296,11 +322,11 @@ class _PInicioSesionState extends State<PInicioSesion> {
                 ElevatedButton(
                   onPressed: _InicioHandler,
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(16),
+                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 60),
                     backgroundColor: Colors.pinkAccent
                   ),
                   child: Text(
-                    "INICIAR SESIÓN",
+                    "¡INICIAR SESIÓN!",
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black
@@ -309,15 +335,33 @@ class _PInicioSesionState extends State<PInicioSesion> {
                 ),
                 SizedBox(height: 16),
 
+                // BOTÓN DE INICIO DE SESIÓN CON GOOGLE
+                OutlinedButton.icon(
+                  onPressed: _signInWithGoogle,
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 26),
+                    side: BorderSide(color: Colors.pink, width: 2),
+                  ),
+                  icon: FaIcon(
+                    FontAwesomeIcons.google,
+                    size: 20,
+                  ),
+                  label: Text(
+                    "Iniciar sesión con Google",
+                    style: TextStyle(fontSize: 16, color: Colors.black87),
+                  ),
+                ),
+                SizedBox(height: 16),
+
                 //BOTÓN DE REGISTRO
                 OutlinedButton(
                   onPressed: _RegistroHandler,
                   style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 26),
+                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 70),
                     side: BorderSide(color: Colors.pink, width: 2)
                   ),
                   child: Text(
-                    "REGISTRAME",
+                    "¡REGÍSTRAME!",
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.pink
@@ -325,15 +369,15 @@ class _PInicioSesionState extends State<PInicioSesion> {
                   )
                 ),
 
-                SizedBox(height: 16),
+                SizedBox(height: 10),
                 //BARRA ESPACIADORA DE CONCEPTOS
                 const Divider(),
-                SizedBox(height: 16),
+                SizedBox(height: 10),
 
                 OutlinedButton(
                     onPressed: _recuperarContrasenia,
                     style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.all(16),
+                      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 26),
                       side: BorderSide(color: Colors.pink, width: 2)
                     ),
                     child: Text(
@@ -349,6 +393,158 @@ class _PInicioSesionState extends State<PInicioSesion> {
         ),
       );
     }
+}
+
+//============================================================//
+// PÁGINA DE REGISTRO DE USUARIO                              //
+//============================================================//
+class PRegistroUsuario extends StatefulWidget {
+  const PRegistroUsuario({super.key});
+
+  @override
+  State<PRegistroUsuario> createState() => _PRegistroUsuarioState();
+}
+
+class _PRegistroUsuarioState extends State<PRegistroUsuario> {
+  //Controlador de autenticación por correo y contraseña
+  final TextEditingController _controladorCorreo = TextEditingController();
+  final TextEditingController _controladorContra = TextEditingController();
+
+  /* MÉTODO DE DESECHO DE CONTROLADORES */
+  @override
+  void dispose() {
+    _controladorCorreo.dispose();
+    _controladorContra.dispose();
+    super.dispose();
+  }
+  /* FIN MÉTODO DE DESECHO DE CONTROLADORES */
+
+  /* MÉTODO DE REGISTRO DE USUARIO */
+  void _RegistroHandler() async {
+    final email = _controladorCorreo.text.trim();
+    final password = _controladorContra.text.trim();
+
+    if(email.isEmpty) {
+      _mostrarSnackBar("Error. No colocaste un correo.");
+      return;
+    }
+
+    if(password.length < 8) {
+      _mostrarSnackBar("Error. La contraseña es menor a 8 caracteres");
+      return;
+    }
+
+    try {
+      User? user = await ServicioAuth().signUp(
+          email: email, password: password);
+
+      if (user != null) {
+        _mostrarSnackBar("Registro exitoso.", isError: false);
+        Navigator.pop(context);
+      }
+    } on FirebaseAuthException catch (e) {
+      String mensajeError = "";
+      if(e.code == 'email-already-in-use') {
+        mensajeError = "Correo en uso. Intente otro correo.";
+      } else if(e.code == 'invalid-email') {
+        mensajeError = "No es un correo.";
+      } else if(e.code == 'weak-password') {
+        mensajeError = "La contraseña es débil.";
+      }
+      _mostrarSnackBar(mensajeError);
+    } catch (e) {
+      _mostrarSnackBar("Ha sucedido un error. Intente nuevamente.");
+    }
+  }
+  /* FIN MÉTODO DE REGISTRO DE USUARIO */
+
+  //ESQUELETO MOSTRAR MENSAJES
+  void _mostrarSnackBar(String message, {bool isError = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.redAccent : Colors.green,
+      ),
+    );
+  }
+
+  //Registro de Usuario
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 4,
+              children: [
+                Container(
+                    child: Column(
+                        children: [
+                          Text(
+                              "ExploraCDMX",
+                              style: TextStyle(
+                                  fontFamily: 'Roboto',
+                                  fontSize: 38,
+                                  fontWeight: FontWeight.bold
+                              )
+                          ),
+                          Text(
+                              "Crea tu Cuenta",
+                              style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold
+                              )
+                          ),
+                        ]
+                    )
+                ),
+
+                //CAMPOS PARA CORREO Y CONTRASEÑA
+                Container(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                        children: [
+                          //CAMPO PARA CORREO
+                          TextField(
+                            controller: _controladorCorreo,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                                labelText: 'Correo Electrónico', border: OutlineInputBorder()),
+                          ),
+                          SizedBox(height: 16),
+
+                          //CAMPO PARA CONTRASEÑA
+                          TextField(
+                            controller: _controladorContra,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                                labelText: 'Contraseña (Mínimo 6 carácteres)', border: OutlineInputBorder()),
+                          ),
+                          SizedBox(height: 16),
+                        ]
+                    )
+                ),
+
+                //BOTÓN DE REGISTRO
+                OutlinedButton(
+                    onPressed: _RegistroHandler,
+                    style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 26),
+                        side: BorderSide(color: Colors.pink, width: 2)
+                    ),
+                    child: Text(
+                        "Finalizar Registro",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.pink
+                        )
+                    )
+                )
+              ]
+          )
+      ),
+    );
+  }
 }
 
 /* WIDGET CON ESTADO QUE CAMBIA SEGÚN LA INTERACCIÓN CON EL USUARIO*/
@@ -1959,7 +2155,7 @@ class _PPrincipalState extends State<PPrincipal> {
 
           floatingActionButton: _indiceMenu == 0 ?
           FloatingActionButton(
-              backgroundColor: Colors.pink.shade600,
+              backgroundColor: Colors.grey.shade200,
               child: Icon(Icons.filter_alt),
               onPressed: _mostrarBuscador
           )
@@ -1968,7 +2164,7 @@ class _PPrincipalState extends State<PPrincipal> {
           /* CÓDIGO DE LA BARRA DE NAVEGACIÓN */
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _indiceMenu,
-            backgroundColor: Colors.pink.shade600,
+            backgroundColor: Colors.grey.shade200,
             selectedItemColor: Colors.black,
             unselectedItemColor: Colors.black38,
             onTap: _itemPresionado,

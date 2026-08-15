@@ -52,37 +52,37 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCxwFJRyIUiOvbVaVEVcJ8VzpPdwm_1FsY',
-    appId: '1:1028662830128:android:f2e683dd1b37bea7b979f5',
+    appId: '1:1028662830128:android:b8ffd3376cfec51fb979f5',
     messagingSenderId: '1028662830128',
     projectId: 'app-explora-cdmx',
     storageBucket: 'app-explora-cdmx.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAGZ_DcHqcV_2JfpKJeQusixg2CQeb-q6s',
-    appId: '1:1028662830128:ios:fd30d762c0a2a926b979f5',
+    appId: '1:1028662830128:ios:f75829f14c0a3845b979f5',
     messagingSenderId: '1028662830128',
     projectId: 'app-explora-cdmx',
     storageBucket: 'app-explora-cdmx.firebasestorage.app',
+    androidClientId: '1028662830128-0bf98ejm0p6d5d995o8dlamp33jqnj2c.apps.googleusercontent.com',
+    iosClientId: '1028662830128-2vhd94liqj5q3aovb29t3vubnb753vth.apps.googleusercontent.com',
     iosBundleId: 'com.urbenia.explora-cdmx',
   );
-
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAGZ_DcHqcV_2JfpKJeQusixg2CQeb-q6s',
     appId: '1:1028662830128:ios:2f1e9aa7f02da9ceb979f5',
     messagingSenderId: '1028662830128',
     projectId: 'app-explora-cdmx',
     storageBucket: 'app-explora-cdmx.firebasestorage.app',
-    iosBundleId: 'com.urbenia.exploracdmx',
+    iosBundleId: 'com.castilla.exploracdmx',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyCA1jIA3Uw6Nr0YZavhlqbGJll1Z_LyhR4',
-    appId: '1:1028662830128:web:039fcd112cc2667cb979f5',
+    appId: '1:1028662830128:web:2ab7dd3b1d5fbb50b979f5',
     messagingSenderId: '1028662830128',
     projectId: 'app-explora-cdmx',
     authDomain: 'app-explora-cdmx.firebaseapp.com',
     storageBucket: 'app-explora-cdmx.firebasestorage.app',
-    measurementId: 'G-9J68QJYZJ9',
+    measurementId: 'G-8S16642LNB',
   );
 }
