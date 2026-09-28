@@ -1091,7 +1091,7 @@ class _PPrincipalState extends State<PPrincipal> {
       /* FIN FUNCIÓN PARA MOSTRAR TARJETA GRANDE */
 
       /* FUNCIÓN PARA MOSTRAR LA "TARJETA" DE BÚSQUEDA */
-      void _mostrarBuscador() {
+      void _mostrarFiltrador() {
         showDialog(
           context: context,
           builder: (context) {
@@ -1920,11 +1920,11 @@ class _PPrincipalState extends State<PPrincipal> {
           children: [
             //TEXTO ESTÁTICO EN LA PANTALLA DEL CALENDARIO
             Container(
-              padding: EdgeInsets.only(top: 18),
+              padding: EdgeInsets.only(top: 42),
               child: Text(
                   "Calendario",
                   style: TextStyle(
-                      fontSize: 40,
+                      fontSize: 50,
                       fontWeight: FontWeight.bold
                   )
               ),
@@ -1999,11 +1999,11 @@ class _PPrincipalState extends State<PPrincipal> {
         return Column(
             children: [
               Container(
-                  padding: EdgeInsets.only(top: 18),
+                  padding: EdgeInsets.only(top: 42),
                   child: Text(
                       "Tu Cuenta",
                       style: TextStyle(
-                          fontSize: 40,
+                          fontSize: 50,
                           fontWeight: FontWeight.bold
                       )
                   )
@@ -2011,7 +2011,7 @@ class _PPrincipalState extends State<PPrincipal> {
               Container(
                 padding: EdgeInsets.all(3),
                 child: Text(
-                  "$correo",
+                  "Tu correo es: $correo",
                   style: TextStyle(
                       fontSize: 20
                   ),
@@ -2030,7 +2030,7 @@ class _PPrincipalState extends State<PPrincipal> {
                     backgroundColor: Colors.pinkAccent
                 ),
                 child: Text(
-                    "Reestablecer mi contraseña",
+                    "Reestablecer Contraseña",
                     style: TextStyle(
                         fontSize: 18,
                         color: Colors.black
@@ -2039,7 +2039,46 @@ class _PPrincipalState extends State<PPrincipal> {
               ),
 
               SizedBox(height: 16),
+
               const Divider(),
+
+              SizedBox(height: 16),
+
+              Container(
+                padding: EdgeInsets.all(3),
+                child: Text(
+                  "¿Problemas con la Aplicación?",
+                  style: TextStyle(
+                      fontSize: 20
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 16),
+
+              //BOTÓN PARA ENVIAR UN CORREO
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(16),
+                      backgroundColor: Colors.pinkAccent
+                  ),
+                  onPressed: () => launchUrl(
+                      Uri.parse('mailto:exploracdmx.nacionalurbenia@gmail.com'),
+                      mode: LaunchMode.externalApplication
+                  ),
+                  child: Text(
+                    "Envíanos un Correo",
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black
+                    ),
+                  )
+              ),
+
+              SizedBox(height: 16),
+
+              const Divider(),
+
               SizedBox(height: 16),
 
               //BOTÓN PARA CERRAR SESIÓN
@@ -2048,7 +2087,7 @@ class _PPrincipalState extends State<PPrincipal> {
                   await ServicioAuth().signOut();
                 },
                 style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 61),
+                    padding: EdgeInsets.all(16),
                     backgroundColor: Colors.pinkAccent
                 ),
                 child: Text(
@@ -2059,26 +2098,26 @@ class _PPrincipalState extends State<PPrincipal> {
                     )
                 ),
               ),
+
               SizedBox(height: 16),
 
               //BOTÓN PARA ELIMINAR USUARIO
-              OutlinedButton(
-                  onPressed: () async {
-                    await ServicioAuth().borrarCuenta();
-                  },
-                  style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 56),
-                      backgroundColor: Colors.red,
-                      side: BorderSide(color: Colors.red, width: 2)
-                  ),
-                  child: Text(
-                      "BORRAR CUENTA",
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black
-                      )
-                  )
-              ),
+              ElevatedButton(
+                onPressed: () async {
+                  await ServicioAuth().borrarCuenta();
+                },
+                style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(16),
+                    backgroundColor: Colors.red
+                ),
+                child: Text(
+                    "BORRAR CUENTA",
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black
+                    )
+                )
+              )
             ]
         );
       }
@@ -2105,13 +2144,10 @@ class _PPrincipalState extends State<PPrincipal> {
           body: PageView(
             controller: _controladorPagina,
             onPageChanged: _paginaCambiada,
-            //Physics evita el scroll horizontal para que sea solo por el menu
-            physics: const NeverScrollableScrollPhysics(),
             children: [
               /* CÓDIGO PARA LA PANTALLA PRINCIPAL */
               ListView(
                 children: [
-
                   //CONTENEDOR DEL SALUDO EN LA PANTALLA PRINCIPAL
                   Container(
                       padding: EdgeInsets.only(top: 18),
@@ -2155,16 +2191,16 @@ class _PPrincipalState extends State<PPrincipal> {
 
           floatingActionButton: _indiceMenu == 0 ?
           FloatingActionButton(
-              backgroundColor: Colors.grey.shade200,
+              backgroundColor: Colors.grey.shade100,
               child: Icon(Icons.filter_alt),
-              onPressed: _mostrarBuscador
+              onPressed: _mostrarFiltrador
           )
           : null ,
 
           /* CÓDIGO DE LA BARRA DE NAVEGACIÓN */
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _indiceMenu,
-            backgroundColor: Colors.grey.shade200,
+            backgroundColor: Colors.grey.shade100,
             selectedItemColor: Colors.black,
             unselectedItemColor: Colors.black38,
             onTap: _itemPresionado,
