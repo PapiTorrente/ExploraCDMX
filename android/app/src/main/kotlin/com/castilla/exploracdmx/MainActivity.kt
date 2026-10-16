@@ -1,4 +1,4 @@
-package com.example.exploratemp
+package com.castilla.exploracdmx
 
 import io.flutter.embedding.android.FlutterActivity
 

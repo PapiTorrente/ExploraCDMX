@@ -38,7 +38,7 @@ class ExploraCDMXApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       //Titulo efectivo de la aplicación.
-      title: 'Hora de Explorar',
+      title: 'Explora CDMX',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
         useMaterial3: true,
