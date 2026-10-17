@@ -553,8 +553,11 @@ class PPrincipal extends StatefulWidget {
 }
 
 class _PPrincipalState extends State<PPrincipal> {
-      //Indice del elemento en la lista _paginas usado para cambiar entre ellos.
-      var _indiceMenu = 0;
+      final GlobalKey<CalendarioState> _calendarioKey = GlobalKey<CalendarioState>();
+
+      //Variable que almacena la fecha elegida por el usuario para su evento en calendario.
+      DateTime _fechaElegida = DateTime.now();
+      Color _colorElegido = Colors.pinkAccent;
 
       //Variable que almacena la selección del usuario tomada de los ChoiceChips.
       String? _seleccionTipo;
@@ -581,6 +584,9 @@ class _PPrincipalState extends State<PPrincipal> {
 
       //Controlador de la animación de la página.
       final PageController _controladorPagina = PageController(initialPage: 0);
+
+      //Indice del elemento en la lista _paginas usado para cambiar entre ellos.
+      var _indiceMenu = 0;
 
       @override
       void initState() {
@@ -825,6 +831,18 @@ class _PPrincipalState extends State<PPrincipal> {
         );
       }
 
+      //Función usada en el método de agregar al calendario.
+      void _mostrarSelectorFecha() {
+        showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now(),
+            lastDate: DateTime.now().add(Duration(days: 365))
+        ).then((value) {
+          _fechaElegida = value!;
+        });
+      }
+
       void _agregarAlCalendario(String titulo) {
         //Función asíncrona que muestra una ventana sobre toda la aplicación y
         //bloquea el resto de la aplicación.
@@ -865,24 +883,18 @@ class _PPrincipalState extends State<PPrincipal> {
                       ),
                       child: Column(
                         children: [
-                          Text(
-                            "Selecciona día y hora",
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                                decoration: TextDecoration.none
-                            ),
+                          MaterialButton(
+                              onPressed: _mostrarSelectorFecha,
+                              child: Text(
+                                "Selecciona día y hora",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    decoration: TextDecoration.none
+                                ),
+                              ),
                           ),
                           SizedBox(height: 6),
-                          SizedBox(
-                            child: DatePicker(
-                              minDate: DateTime.now(),
-                              maxDate: DateTime.now().add(Duration(days: 365)),
-                              onDateSelected: (date) {
-                                //_fijarFechaInicio(date);
-                              }
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -932,7 +944,7 @@ class _PPrincipalState extends State<PPrincipal> {
                           ),
                         ),
                         onColorChanged: (Color value) {
-                          //_colorElegido = value;
+                          _colorElegido = value;
                         },
                       ),
                     ),
@@ -957,10 +969,11 @@ class _PPrincipalState extends State<PPrincipal> {
                               // calendario. Necesita el nombre del
                               //evento a agendar
                               //_agendarVisitaLugar(titulo);
+                              _calendarioKey.currentState?.agendarVisitaLugar(titulo, _fechaElegida, _fechaElegida, _colorElegido);
+
                               //Reestablece los valores
-                              //_fechaInicio = DateTime.now();
-                              //_fechaFinal = DateTime.now();
-                              //_colorElegido = Colors.pinkAccent;
+                              _fechaElegida = DateTime.now();
+                              _colorElegido = Colors.pinkAccent;
 
                               //Cierra la tarjeta de agregar
                               Navigator.of(context).pop();
@@ -1394,6 +1407,8 @@ class _PPrincipalState extends State<PPrincipal> {
 
           floatingActionButton: _indiceMenu == 0 ?
           FloatingActionButton(
+              tooltip: 'Filtrar',
+              mini: true,
               backgroundColor: Colors.grey.shade100,
               onPressed: _mostrarFiltrador,
               child: Icon(Icons.filter_alt)
