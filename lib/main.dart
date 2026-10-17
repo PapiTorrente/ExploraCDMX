@@ -557,6 +557,7 @@ class _PPrincipalState extends State<PPrincipal> {
 
       //Variable que almacena la fecha elegida por el usuario para su evento en calendario.
       DateTime _fechaElegida = DateTime.now();
+      TimeOfDay _horaElegida = TimeOfDay.now();
       Color _colorElegido = Colors.pinkAccent;
 
       //Variable que almacena la selección del usuario tomada de los ChoiceChips.
@@ -839,8 +840,24 @@ class _PPrincipalState extends State<PPrincipal> {
             firstDate: DateTime.now(),
             lastDate: DateTime.now().add(Duration(days: 365))
         ).then((value) {
-          _fechaElegida = value!;
+          setState((){
+            _fechaElegida = value!;
+          });
         });
+      }
+
+      void _mostrarSelectorHora() {
+        showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.now(),
+          initialEntryMode: TimePickerEntryMode.inputOnly,
+          orientation: Orientation.portrait,
+          use24HourFormat: true,
+        ).then((value) {
+          setState((){
+            _horaElegida = value!;
+          });
+        }
       }
 
       void _agregarAlCalendario(String titulo) {
@@ -849,7 +866,6 @@ class _PPrincipalState extends State<PPrincipal> {
         showDialog(
           builder: (context) {
 
-            /* CÓDIGO DE LA TARJETA PARA AGREGAR AL CALENDARIO */
             return Dialog(
               insetPadding: EdgeInsets.all(10),
               shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(8)),
@@ -863,14 +879,10 @@ class _PPrincipalState extends State<PPrincipal> {
                     ),
                     borderRadius: BorderRadius.circular(8)
                 ),
-
-                //CONTENIDO DENTRO DE LA TARJETA DE AGREGAR AL CALENDARIO
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-
-                    //CONTENEDOR PARA EL TEXTO DE LA FECHA DE INICIO
                     Container(
                       padding: EdgeInsets.all(4),
                       decoration: BoxDecoration(
@@ -884,13 +896,17 @@ class _PPrincipalState extends State<PPrincipal> {
                       child: Column(
                         children: [
                           MaterialButton(
+                              height: 30,
                               onPressed: _mostrarSelectorFecha,
-                              child: Text(
-                                "Selecciona día y hora",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.white,
-                                    decoration: TextDecoration.none
+                              child: Padding(
+                                padding: EdgeInsets.all(20.0),
+                                child: Text(
+                                  "Elige el día",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      decoration: TextDecoration.none
+                                  ),
                                 ),
                               ),
                           ),
@@ -928,17 +944,9 @@ class _PPrincipalState extends State<PPrincipal> {
                         },
                         selectedPickerTypeColor: Colors.white,
                         heading: Text(
-                          "Elige un color",
+                          "Elige el color",
                           style: TextStyle(
                               fontSize: 18,
-                              color: Colors.black,
-                              decoration: TextDecoration.none
-                          ),
-                        ),
-                        subheading: Text(
-                          "Elige la variación",
-                          style: TextStyle(
-                              fontSize: 16,
                               color: Colors.black,
                               decoration: TextDecoration.none
                           ),
