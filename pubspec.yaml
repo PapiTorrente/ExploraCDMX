@@ -11,6 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+
   #Firebase
   firebase_core:
   cloud_firestore: ^6.0.2
@@ -22,7 +25,6 @@ dependencies:
 
   #Tarjeta de Agendar Evento
   flex_color_picker: ^4.0.0
-  date_picker_plus: ^7.0.1
   cupertino_calendar_picker: ^3.0.0
 
   #Navbar
