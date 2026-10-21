@@ -60,11 +60,27 @@ class _UsuarioState extends State<Usuario> {
           ),
           Container(
             padding: EdgeInsets.all(3),
-            child: Text(
-              "Tu correo es: $correo",
-              style: TextStyle(
-                  fontSize: 20
-              ),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Tu correo es:",
+                    style: TextStyle(
+                        fontSize: 22
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    correo.toString(),
+                    style: TextStyle(
+                        fontSize: 20
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
 
@@ -77,7 +93,10 @@ class _UsuarioState extends State<Usuario> {
             },
             style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(16),
-                backgroundColor: Colors.pinkAccent
+                backgroundColor: Colors.pinkAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                )
             ),
             child: Text(
                 "Reestablecer Contraseña",
@@ -110,7 +129,10 @@ class _UsuarioState extends State<Usuario> {
           ElevatedButton(
               style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(16),
-                  backgroundColor: Colors.pinkAccent
+                  backgroundColor: Colors.pinkAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  )
               ),
               onPressed: () => launchUrl(
                   Uri.parse('mailto:exploracdmx.nacionalurbenia@gmail.com'),
@@ -137,8 +159,11 @@ class _UsuarioState extends State<Usuario> {
               await ServicioAuth().signOut();
             },
             style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.all(16),
-                backgroundColor: Colors.pinkAccent
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 27),
+                backgroundColor: Colors.pinkAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                )
             ),
             child: Text(
                 "CERRAR SESIÓN",
@@ -157,14 +182,17 @@ class _UsuarioState extends State<Usuario> {
                 await ServicioAuth().borrarCuenta();
               },
               style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(16),
-                  backgroundColor: Colors.red
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 48),
+                  backgroundColor: Colors.pink.shade900,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  )
               ),
               child: Text(
                   "BORRAR CUENTA",
                   style: TextStyle(
                       fontSize: 18,
-                      color: Colors.black
+                      color: Colors.white
                   )
               )
           )

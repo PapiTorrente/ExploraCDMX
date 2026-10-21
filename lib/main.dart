@@ -44,8 +44,8 @@ class ExploraCDMXApp extends StatelessWidget {
       ),
       //Idioma de la aplicación.
       localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        SfGlobalLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+        SfGlobalLocalizations.delegate
       ],
       supportedLocales: [
         const Locale('es'),
@@ -300,7 +300,9 @@ class _PInicioSesionState extends State<PInicioSesion> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                         labelText: 'Correo Electrónico',
-                        border: OutlineInputBorder()),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        )),
                   ),
                   SizedBox(height: 16),
 
@@ -319,7 +321,11 @@ class _PInicioSesionState extends State<PInicioSesion> {
               onPressed: _inicioHandler,
               style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 14, horizontal: 80),
-                  backgroundColor: Colors.pinkAccent),
+                  backgroundColor: Colors.pinkAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  )
+              ),
               child: Text("¡INICIAR SESIÓN!",
                   style: TextStyle(fontSize: 18, color: Colors.black)),
             ),
@@ -330,7 +336,13 @@ class _PInicioSesionState extends State<PInicioSesion> {
               onPressed: _signInWithGoogle,
               style: OutlinedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 26),
-                side: BorderSide(color: Colors.pink, width: 2),
+                side: BorderSide(
+                    color: Colors.pink,
+                    width: 2,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                )
               ),
               icon: FaIcon(
                 FontAwesomeIcons.google,
@@ -348,7 +360,11 @@ class _PInicioSesionState extends State<PInicioSesion> {
                 onPressed: _registroHandler,
                 style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 90),
-                    side: BorderSide(color: Colors.pink, width: 2)),
+                    side: BorderSide(color: Colors.pink, width: 2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    )
+                ),
                 child: Text("¡REGÍSTRAME!",
                     style: TextStyle(fontSize: 18, color: Colors.pink))),
 
@@ -361,7 +377,11 @@ class _PInicioSesionState extends State<PInicioSesion> {
                 onPressed: _recuperarContrasenia,
                 style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 16, horizontal: 46),
-                    side: BorderSide(color: Colors.pink, width: 2)),
+                    side: BorderSide(color: Colors.pink, width: 2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    )
+                ),
                 child: Text(
                   "¿Olvidaste tu contraseña?",
                   style: TextStyle(fontSize: 18, color: Colors.pink),
@@ -493,7 +513,11 @@ class _PRegistroUsuarioState extends State<PRegistroUsuario> {
                 onPressed: _registroHandler,
                 style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 26),
-                    side: BorderSide(color: Colors.pink, width: 2)),
+                    side: BorderSide(color: Colors.pink, width: 2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    )
+                ),
                 child: Text("Finalizar Registro",
                     style: TextStyle(fontSize: 18, color: Colors.pink)))
           ])),
@@ -882,7 +906,7 @@ class _PPrincipalState extends State<PPrincipal> {
                     hasBorder: true,
                     borderColor: Colors.black,
                     enableShadesSelection: false,
-                    showRecentColors: true,
+                    showRecentColors: false,
                     pickersEnabled: const <ColorPickerType, bool>{
                       ColorPickerType.both: false,
                       ColorPickerType.primary: true,

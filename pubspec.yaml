@@ -32,6 +32,7 @@ dependencies:
 
   #Pantalla de Calendario
   syncfusion_flutter_calendar: ^35.1.40+1
+  syncfusion_localizations: ^35.1.40+1
 
   #Inicio de Sesión
   google_sign_in: ^7.2.0
