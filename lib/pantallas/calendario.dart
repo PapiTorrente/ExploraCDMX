@@ -6,6 +6,8 @@ import 'package:flex_color_picker/flex_color_picker.dart'; //Import del selector
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:exploracdmx/notificaciones.dart';
+
 class Calendario extends StatefulWidget {
   const Calendario({super.key});
 
@@ -31,9 +33,14 @@ class CalendarioState extends State<Calendario> {
   //Fuente de los datos para el llenado del calendario.
   MeetingDataSource? _dataSource;
 
+  final TextEditingController _controladorMinutos = TextEditingController();
+
+  int _minutosAntesEvento = 0;
+
   @override
   void initState() {
     super.initState();
+    _controladorMinutos.text = _minutosAntesEvento.toString();
     //Guarda la lista de reuniones para visualizarlos en el calendario.
     _dataSource = MeetingDataSource(_reuniones);
     //Función que carga los eventos guardados en Firebase, eventos anteriormente
@@ -61,6 +68,11 @@ class CalendarioState extends State<Calendario> {
         endTime: DateTime.parse(data['endTime']),
         subject: data['subject'],
         color: Color(data['color']),
+        resourceIds: [
+          data['idNotificacion']?.toString() ?? '',
+          data['minutos']?.toString() ?? '',
+        ],
+        
       );
     }).toList();
 
@@ -117,6 +129,7 @@ class CalendarioState extends State<Calendario> {
       _fechaCargada = reunion.startTime;
       _horaCargada = TimeOfDay.fromDateTime(reunion.startTime);
       _colorElegido = reunion.color;
+      _controladorMinutos.text = reunion.resourceIds![1].toString();
     });
 
     showDialog(
@@ -184,7 +197,7 @@ class CalendarioState extends State<Calendario> {
                     hasBorder: true,
                     borderColor: Colors.black,
                     enableShadesSelection: false,
-                    showRecentColors: true,
+                    showRecentColors: false,
                     pickersEnabled: const <ColorPickerType, bool>{
                       ColorPickerType.both: false,
                       ColorPickerType.primary: true,
@@ -207,6 +220,39 @@ class CalendarioState extends State<Calendario> {
 
                 SizedBox(height: 8),
 
+                const Divider(color: Colors.black),
+
+                SizedBox(height: 8),
+
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                      "Notificaciones",
+                      style: TextStyle(
+                        fontSize: 18,
+                      )
+                  ),
+                ),
+                TextFormField(
+                    onChanged: ((value) {
+                      setState(() {
+                        _minutosAntesEvento = int.parse(value);
+                      });
+                    }),
+                    controller: _controladorMinutos,
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        labelText: "Minutos antes del evento",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                        )
+                    )
+                ),
+
                 //ESPACIO PARA LOS BOTONES DE LA PANTALLA DE AGENDAR EVENTO
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -220,7 +266,7 @@ class CalendarioState extends State<Calendario> {
                             )),
                         onPressed: () {
                           DateTime _fechaReunion = DateTime(_fechaElegida.year, _fechaElegida.month, _fechaElegida.day, _horaElegida.hour, _horaElegida.minute);
-                          _guardarCambiosReunion(reunion,_fechaReunion, _fechaReunion, _colorElegido);
+                          _guardarCambiosReunion(reunion,_fechaReunion, _fechaReunion, _colorElegido, _minutosAntesEvento);
 
                           //Reestablece los valores
                           _fechaElegida = DateTime.now();
@@ -262,9 +308,11 @@ class CalendarioState extends State<Calendario> {
   }
 
   /* FUNCIONES PARA ACTUALIZAR UN EVENTO DEL CALENDARIO */
-  void _guardarCambiosReunion(Appointment reunion, DateTime _fechaInicial, DateTime _fechaFinal, Color color) async {
+  void _guardarCambiosReunion(Appointment reunion, DateTime _fechaInicial, DateTime _fechaFinal, Color color, int minutosAnterior) async {
     final String iD = reunion.id.toString();
-
+    final int idNotifEliminar = int.parse(reunion.resourceIds![0].toString());
+    final int idNotificacion = iD.hashCode + _fechaInicial.day;
+    String? minutos = minutosAnterior.toString();
     Color _colorElegido = color;
 
     try {
@@ -276,6 +324,10 @@ class CalendarioState extends State<Calendario> {
           endTime: _fechaFinal,
           subject: reunion.subject,
           color: _colorElegido,
+          resourceIds: [
+            idNotificacion,
+            minutos,
+          ],
         );
 
         //Reemplazar en la lista de reuniones local.
@@ -293,7 +345,11 @@ class CalendarioState extends State<Calendario> {
         'endTime': _fechaFinal.toIso8601String(),
         'subject': reunion.subject,
         'color': _colorElegido.toARGB32(),
+        'idNotificacion': idNotificacion,
+        'minutos': minutos
       };
+      
+      Notificacion.actualizarNotificacion(idNotifEliminar, _fechaInicial, int.parse(minutos!), reunion.subject);
 
       FirebaseFirestore
           .instance
@@ -342,7 +398,6 @@ class CalendarioState extends State<Calendario> {
                     )
                 ),
                 onPressed: () async {
-                  //Cierra la tarjeta de agregar
                   try {
                     String docID = reunion.id.toString();
                     await FirebaseFirestore
@@ -354,6 +409,7 @@ class CalendarioState extends State<Calendario> {
                     setState(() {
                       _reuniones.remove(reunion);
                       _dataSource?.notifyListeners(CalendarDataSourceAction.remove, [reunion]);
+                      Notificacion.cancelarNotificacion(int.parse(reunion.notes!));
                     });
 
                     Navigator.of(context).pop();

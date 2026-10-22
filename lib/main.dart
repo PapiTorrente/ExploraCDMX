@@ -12,6 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 //Imports para la página principal
 import 'package:flutter/material.dart'; //Import para usar widgets y hacer interfaces
+import 'package:exploracdmx/notificaciones.dart';
 import 'pantallas/calendario.dart';
 import 'pantallas/usuario.dart';
 
@@ -23,6 +24,7 @@ import 'package:syncfusion_localizations/syncfusion_localizations.dart'; //Impor
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Notificacion.inicializar();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -590,6 +592,10 @@ class _PPrincipalState extends State<PPrincipal> {
   //Controlador de la animación de la página.
   final PageController _controladorPagina = PageController(initialPage: 0);
 
+  final TextEditingController _controladorMinutos = TextEditingController();
+
+  int _minutosAntesEvento = 0;
+
   //Indice del elemento en la lista _paginas usado para cambiar entre ellos.
   var _indiceMenu = 0;
 
@@ -841,6 +847,7 @@ class _PPrincipalState extends State<PPrincipal> {
   void _agregarAlCalendario(String titulo) {
     //Función asíncrona que muestra una ventana sobre toda la aplicación y
     //bloquea el resto de la aplicación.
+    _controladorMinutos.text = _minutosAntesEvento.toString();
     showDialog(
       builder: (context) {
         return Dialog(
@@ -929,6 +936,39 @@ class _PPrincipalState extends State<PPrincipal> {
 
                 SizedBox(height: 8),
 
+                const Divider(color: Colors.black),
+
+                SizedBox(height: 8),
+
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                      "Notificaciones",
+                      style: TextStyle(
+                        fontSize: 18,
+                      )
+                  ),
+                ),
+                TextFormField(
+                  onChanged: ((value) {
+                    setState(() {
+                      _minutosAntesEvento = int.parse(value);
+                    });
+                  }),
+                  controller: _controladorMinutos,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Minutos antes del evento",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.pink.shade800, width: 2),
+                    ),
+                    labelStyle: TextStyle(
+                      color: Colors.black,
+                    )
+                  )
+                ),
+
                 //ESPACIO PARA LOS BOTONES DE LA PANTALLA DE AGENDAR EVENTO
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -956,8 +996,11 @@ class _PPrincipalState extends State<PPrincipal> {
                               'endTime': fechaReunion.toIso8601String(),
                               'subject': titulo,
                               'color': _colorElegido.value32bit,
+                              'idNotificacion': user.uid.hashCode + fechaReunion.day,
+                              'minutos': _minutosAntesEvento
                             };
                             await FirebaseFirestore.instance.collection('eventos').add(eventoData);
+                            Notificacion.programarNotificacion(fechaReunion, _minutosAntesEvento, titulo);
                           }
 
                           //Reestablece los valores
@@ -965,6 +1008,7 @@ class _PPrincipalState extends State<PPrincipal> {
                           _fechaElegida = DateTime.now();
                           _horaElegida = TimeOfDay.now();
                           _colorElegido = Colors.pinkAccent;
+                          _minutosAntesEvento = 0;
 
                           //Cierra la tarjeta de agregar
                           Navigator.of(context).pop();
@@ -985,7 +1029,7 @@ class _PPrincipalState extends State<PPrincipal> {
                           Navigator.of(context).pop();
                         },
                         child: Text(
-                          "Cerrar",
+                          "Cancelar",
                           style: TextStyle(color: Colors.white),
                         )),
                   ],

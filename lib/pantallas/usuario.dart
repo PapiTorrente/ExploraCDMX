@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart'; //Import para usar widgets y hacer interfaces
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:url_launcher/url_launcher.dart'; //Import para abrir enlaces.
 
 //Imports para usar Firebase
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 //Imports para usar sesiones de Google
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'package:exploracdmx/notificaciones.dart';
 
 class ServicioAuth {
   final FirebaseAuth _auth = FirebaseAuth.instance;
