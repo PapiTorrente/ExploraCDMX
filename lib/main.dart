@@ -560,11 +560,12 @@ class _PPrincipalState extends State<PPrincipal> {
     "Cine",
     "Espacio Cultural",
     "Espacio Público",
+    "Música",
     "Espacio Recreativo",
-    "Librería",
+    "Biblioteca",
     "Museo",
     "Parque Público",
-    "Restaurante"
+    "Comida"
   ];
 
   //Lista de alcaldías. Se carga desde el principio.
