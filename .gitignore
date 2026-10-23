@@ -37,6 +37,7 @@ android/local.properties
 .pub-cache/
 .pub/
 /build/
+android/build/
 
 # Symbolication related
 app.*.symbols

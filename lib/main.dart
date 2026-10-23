@@ -28,7 +28,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await GoogleSignIn.instance.initialize();
+  await GoogleSignIn.instance.initialize(
+    serverClientId: '1028662830128-uu6m0abpfgo196kjtp2pa4cag8gj2i96.apps.googleusercontent.com'
+  );
   runApp(const ExploraCDMXApp());
 }
 
@@ -423,7 +425,7 @@ class _PRegistroUsuarioState extends State<PRegistroUsuario> {
     final password = _controladorContra.text.trim();
 
     if (email.isEmpty) {
-      _mostrarSnackBar("Error. No colocaste un correo.");
+      _mostrarSnackBar("Error. Ambos campos son obligatorios.");
       return;
     }
 
@@ -545,7 +547,7 @@ class _PPrincipalState extends State<PPrincipal> {
   //Variable que almacena la fecha elegida por el usuario para su evento en calendario.
   DateTime _fechaElegida = DateTime.now();
   TimeOfDay _horaElegida = TimeOfDay.now();
-  Color _colorElegido = Colors.pinkAccent;
+  Color _colorElegido = Colors.pink;
 
   //Variable que almacena la selección del usuario tomada de los ChoiceChips.
   String? _seleccionTipo;
@@ -813,7 +815,7 @@ class _PPrincipalState extends State<PPrincipal> {
     showDatePicker(
             context: context,
             locale: const Locale('es'),
-            initialDate: DateTime.now(),
+            initialDate: _fechaElegida,
             firstDate: DateTime.now(),
             lastDate: DateTime.now().add(Duration(days: 365)),
             initialEntryMode: DatePickerEntryMode.calendarOnly,
@@ -830,7 +832,7 @@ class _PPrincipalState extends State<PPrincipal> {
   void _mostrarSelectorHora() {
     showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: _horaElegida,
       initialEntryMode: TimePickerEntryMode.inputOnly,
       orientation: Orientation.portrait,
       helpText: "Elige la hora",
@@ -1006,12 +1008,10 @@ class _PPrincipalState extends State<PPrincipal> {
 
                           //Reestablece los valores
                           _fechaElegida = DateTime.now();
-                          _fechaElegida = DateTime.now();
                           _horaElegida = TimeOfDay.now();
-                          _colorElegido = Colors.pinkAccent;
+                          _colorElegido = Colors.pink;
                           _minutosAntesEvento = 0;
 
-                          //Cierra la tarjeta de agregar
                           Navigator.of(context).pop();
                         },
                         child: Text(
@@ -1027,6 +1027,11 @@ class _PPrincipalState extends State<PPrincipal> {
                               borderRadius: BorderRadius.circular(4),
                             )),
                         onPressed: () {
+                          //Reestablece los valores
+                          _fechaElegida = DateTime.now();
+                          _horaElegida = TimeOfDay.now();
+                          _colorElegido = Colors.pink;
+                          _minutosAntesEvento = 0;
                           Navigator.of(context).pop();
                         },
                         child: Text(

@@ -8,7 +8,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 //Imports para usar sesiones de Google
 import 'package:google_sign_in/google_sign_in.dart';
 
+//Import para debug de notificaciones
 import 'package:exploracdmx/notificaciones.dart';
+
 
 class ServicioAuth {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -37,6 +39,8 @@ class ServicioAuth {
 }
 
 class Usuario extends StatefulWidget {
+  const Usuario({super.key});
+
   @override
   _UsuarioState createState() => _UsuarioState();
 }
@@ -109,6 +113,29 @@ class _UsuarioState extends State<Usuario> {
           ),
 
           SizedBox(height: 16),
+
+          //BOTÓN PARA ENVIAR NOTIFICACIÓN (DEBUG)
+          /*
+          ElevatedButton(
+            onPressed: Notificacion().enviarNotificacion,
+            style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(16),
+                backgroundColor: Colors.pinkAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                )
+            ),
+            child: Text(
+                "Enviar notificacion",
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black
+                )
+            ),
+          ),
+
+          SizedBox(height: 16),
+           */
 
           const Divider(),
 

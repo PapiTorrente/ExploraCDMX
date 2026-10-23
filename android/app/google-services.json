@@ -7,25 +7,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1028662830128:android:b8ffd3376cfec51fb979f5",
+        "mobilesdk_app_id": "1:1028662830128:android:176f19ac70843e62b979f5",
         "android_client_info": {
           "package_name": "com.castilla.exploracdmx"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "1028662830128-0bf98ejm0p6d5d995o8dlamp33jqnj2c.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.castilla.exploracdmx",
-            "certificate_hash": "6db4dbe65dcbac2c2bc90eaffb3b9fc2d9c010f5"
-          }
-        },
-        {
-          "client_id": "1028662830128-d5jqe744bbjk47u23918idfpljagi4rg.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyCxwFJRyIUiOvbVaVEVcJ8VzpPdwm_1FsY"
@@ -35,14 +22,10 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1028662830128-d5jqe744bbjk47u23918idfpljagi4rg.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1028662830128-2vhd94liqj5q3aovb29t3vubnb753vth.apps.googleusercontent.com",
+              "client_id": "1028662830128-muptr0f0b2jmgl51lab9ckfmo9g9jrcm.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.urbenia.explora-cdmx"
+                "bundle_id": "com.castilla.exploracdmx"
               }
             }
           ]

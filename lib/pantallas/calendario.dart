@@ -265,16 +265,15 @@ class CalendarioState extends State<Calendario> {
                               borderRadius: BorderRadius.circular(4),
                             )),
                         onPressed: () {
-                          DateTime _fechaReunion = DateTime(_fechaElegida.year, _fechaElegida.month, _fechaElegida.day, _horaElegida.hour, _horaElegida.minute);
-                          _guardarCambiosReunion(reunion,_fechaReunion, _fechaReunion, _colorElegido, _minutosAntesEvento);
+                          DateTime fechaReunion = DateTime(_fechaElegida.year, _fechaElegida.month, _fechaElegida.day, _horaElegida.hour, _horaElegida.minute);
+                          _guardarCambiosReunion(reunion,fechaReunion, fechaReunion, _colorElegido, _minutosAntesEvento);
 
                           //Reestablece los valores
                           _fechaElegida = DateTime.now();
                           _horaElegida = TimeOfDay.now();
-                          _fechaReunion = DateTime.now();
+                          fechaReunion = DateTime.now();
                           _colorElegido = Colors.pinkAccent;
 
-                          //Cierra la tarjeta de agregar
                           Navigator.of(context).pop();
                         },
                         child: Text(
@@ -290,6 +289,12 @@ class CalendarioState extends State<Calendario> {
                               borderRadius: BorderRadius.circular(4),
                             )),
                         onPressed: () {
+                          //Reestablece los valores
+                          _fechaElegida = DateTime.now();
+                          _horaElegida = TimeOfDay.now();
+                          _colorElegido = Colors.pink;
+                          _minutosAntesEvento = 0;
+
                           Navigator.of(context).pop();
                         },
                         child: Text(
@@ -308,22 +313,22 @@ class CalendarioState extends State<Calendario> {
   }
 
   /* FUNCIONES PARA ACTUALIZAR UN EVENTO DEL CALENDARIO */
-  void _guardarCambiosReunion(Appointment reunion, DateTime _fechaInicial, DateTime _fechaFinal, Color color, int minutosAnterior) async {
+  void _guardarCambiosReunion(Appointment reunion, DateTime fechaInicial, DateTime fechaFinal, Color color, int minutosAnterior) async {
     final String iD = reunion.id.toString();
     final int idNotifEliminar = int.parse(reunion.resourceIds![0].toString());
-    final int idNotificacion = iD.hashCode + _fechaInicial.day;
+    final int idNotificacion = iD.hashCode + fechaInicial.day;
     String? minutos = minutosAnterior.toString();
-    Color _colorElegido = color;
+    Color colorElegido = color;
 
     try {
       setState(() {
         //Crea un evento con la información actualizada.
         final eventoActualizado = Appointment(
           id: iD,
-          startTime: _fechaInicial,
-          endTime: _fechaFinal,
+          startTime: fechaInicial,
+          endTime: fechaFinal,
           subject: reunion.subject,
-          color: _colorElegido,
+          color: colorElegido,
           resourceIds: [
             idNotificacion,
             minutos,
@@ -341,15 +346,15 @@ class CalendarioState extends State<Calendario> {
       });
 
       final eventoActualizadoFirestore = {
-        'startTime': _fechaInicial.toIso8601String(),
-        'endTime': _fechaFinal.toIso8601String(),
+        'startTime': fechaInicial.toIso8601String(),
+        'endTime': fechaFinal.toIso8601String(),
         'subject': reunion.subject,
-        'color': _colorElegido.toARGB32(),
+        'color': colorElegido.toARGB32(),
         'idNotificacion': idNotificacion,
         'minutos': minutos
       };
       
-      Notificacion.actualizarNotificacion(idNotifEliminar, _fechaInicial, int.parse(minutos!), reunion.subject);
+      Notificacion.actualizarNotificacion(idNotifEliminar, fechaInicial, int.parse(minutos), reunion.subject);
 
       FirebaseFirestore
           .instance
