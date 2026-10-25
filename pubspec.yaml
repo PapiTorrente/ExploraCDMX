@@ -2,7 +2,7 @@ name: exploracdmx
 description: "Una aplicación para explorar la Ciudad de México"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 3.0.0+8
+version: 3.0.1+9
 
 environment:
   sdk: ^3.6.1

@@ -423,7 +423,7 @@ class CalendarioState extends State<Calendario> {
                   }
                 },
                 child: Text(
-                  "Si, eliminar",
+                  "Sí, eliminar",
                   style: TextStyle(
                       color: Colors.white
                   ),
