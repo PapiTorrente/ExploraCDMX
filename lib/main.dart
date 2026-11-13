@@ -1246,13 +1246,16 @@ class _PPrincipalState extends State<PPrincipal> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //Título
-                      Text("Filtro",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 32,
-                              color: Colors.black,
-                              decoration: TextDecoration.none,
-                              fontWeight: FontWeight.bold)
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text("Filtro",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 32,
+                                color: Colors.black,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.bold)
+                        ),
                       ),
 
                       //Subtítulo
