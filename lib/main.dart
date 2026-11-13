@@ -29,8 +29,8 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await GoogleSignIn.instance.initialize(
-    serverClientId: '1028662830128-uu6m0abpfgo196kjtp2pa4cag8gj2i96.apps.googleusercontent.com'
-  );
+      serverClientId:
+          '1028662830128-uu6m0abpfgo196kjtp2pa4cag8gj2i96.apps.googleusercontent.com');
   runApp(const ExploraCDMXApp());
 }
 
@@ -43,6 +43,7 @@ class ExploraCDMXApp extends StatelessWidget {
       //Titulo efectivo de la aplicación.
       title: 'Explora CDMX',
       theme: ThemeData(
+        fontFamily: 'Sansation',
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
         useMaterial3: true,
       ),
@@ -180,6 +181,9 @@ class PInicioSesion extends StatefulWidget {
 }
 
 class _PInicioSesionState extends State<PInicioSesion> {
+  //Color Principal es rosa "claro" y brilloso. ISS significa 'Inicio Sesión State'.
+  final Color _colorPrincipal_ISS = Color.fromARGB(255, 228, 0, 124);
+
   //Controlador de autenticación por correo y contraseña
   final TextEditingController _controladorCorreo = TextEditingController();
   final TextEditingController _controladorContra = TextEditingController();
@@ -286,10 +290,7 @@ class _PInicioSesionState extends State<PInicioSesion> {
               children: [
             Column(children: [
               Text("ExploraCDMX",
-                  style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 38,
-                      fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 38, fontWeight: FontWeight.bold)),
               Text("Inicia Sesión",
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
             ]),
@@ -325,36 +326,35 @@ class _PInicioSesionState extends State<PInicioSesion> {
               onPressed: _inicioHandler,
               style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 14, horizontal: 80),
-                  backgroundColor: Colors.pinkAccent,
+                  backgroundColor: _colorPrincipal_ISS,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
-                  )
-              ),
+                  )),
               child: Text("¡INICIAR SESIÓN!",
-                  style: TextStyle(fontSize: 18, color: Colors.black)),
+                  style: TextStyle(fontSize: 18, color: Colors.white)),
             ),
+
             SizedBox(height: 16),
 
             // BOTÓN DE INICIO DE SESIÓN CON GOOGLE
             OutlinedButton.icon(
               onPressed: _signInWithGoogle,
               style: OutlinedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 26),
-                side: BorderSide(
-                    color: Colors.pink,
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 26),
+                  side: BorderSide(
+                    color: _colorPrincipal_ISS,
                     width: 2,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                )
-              ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  )),
               icon: FaIcon(
                 FontAwesomeIcons.google,
                 size: 20,
               ),
               label: Text(
                 "INICIAR SESIÓN CON GOOGLE",
-                style: TextStyle(fontSize: 16, color: Colors.pink),
+                style: TextStyle(fontSize: 16, color: _colorPrincipal_ISS),
               ),
             ),
             SizedBox(height: 16),
@@ -364,13 +364,13 @@ class _PInicioSesionState extends State<PInicioSesion> {
                 onPressed: _registroHandler,
                 style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 90),
-                    side: BorderSide(color: Colors.pink, width: 2),
+                    side: BorderSide(color: _colorPrincipal_ISS, width: 2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
-                    )
-                ),
+                    )),
                 child: Text("¡REGÍSTRAME!",
-                    style: TextStyle(fontSize: 18, color: Colors.pink))),
+                    style:
+                        TextStyle(fontSize: 18, color: _colorPrincipal_ISS))),
 
             SizedBox(height: 10),
             //BARRA ESPACIADORA DE CONCEPTOS
@@ -381,14 +381,13 @@ class _PInicioSesionState extends State<PInicioSesion> {
                 onPressed: _recuperarContrasenia,
                 style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 16, horizontal: 46),
-                    side: BorderSide(color: Colors.pink, width: 2),
+                    side: BorderSide(color: _colorPrincipal_ISS, width: 2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
-                    )
-                ),
+                    )),
                 child: Text(
                   "¿Olvidaste tu contraseña?",
-                  style: TextStyle(fontSize: 18, color: Colors.pink),
+                  style: TextStyle(color: _colorPrincipal_ISS, fontSize: 18),
                 ))
           ])),
     );
@@ -406,6 +405,9 @@ class PRegistroUsuario extends StatefulWidget {
 }
 
 class _PRegistroUsuarioState extends State<PRegistroUsuario> {
+  //Color Principal es rosa "claro" y brilloso. RUS significa 'Registro Usuario State'.
+  final Color _colorPrincipal_RUS = Color.fromARGB(255, 228, 0, 124);
+
   //Controlador de autenticación por correo y contraseña
   final TextEditingController _controladorCorreo = TextEditingController();
   final TextEditingController _controladorContra = TextEditingController();
@@ -479,10 +481,7 @@ class _PRegistroUsuarioState extends State<PRegistroUsuario> {
               children: [
             Column(children: [
               Text("ExploraCDMX",
-                  style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 38,
-                      fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 38, fontWeight: FontWeight.bold)),
               Text("Crea tu Cuenta",
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
             ]),
@@ -513,17 +512,17 @@ class _PRegistroUsuarioState extends State<PRegistroUsuario> {
                 ])),
 
             //BOTÓN DE REGISTRO
-            OutlinedButton(
-                onPressed: _registroHandler,
-                style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 26),
-                    side: BorderSide(color: Colors.pink, width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    )
-                ),
-                child: Text("Finalizar Registro",
-                    style: TextStyle(fontSize: 18, color: Colors.pink)))
+            ElevatedButton(
+              onPressed: _registroHandler,
+              style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 80),
+                  backgroundColor: _colorPrincipal_RUS,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  )),
+              child: Text("Finalizar e Iniciar Sesión",
+                  style: TextStyle(fontSize: 18, color: Colors.white)),
+            )
           ])),
     );
   }
@@ -541,8 +540,18 @@ class PPrincipal extends StatefulWidget {
 }
 
 class _PPrincipalState extends State<PPrincipal> {
+  //Variable para incluir el calendario en este archivo.
   final GlobalKey<CalendarioState> _calendarioKey =
       GlobalKey<CalendarioState>();
+
+  //Color Principal es rosa mexicano. Se usa en el fondo de las tarjetas.
+  final Color _colorPrincipal = Color.fromARGB(255, 228, 0, 124);
+  //Color Secundario es rosa "obscuro". Se usa en el fondo de los botones.
+  final Color _colorSecundario = Color.fromARGB(255, 137, 0, 75);
+  //Color Terciario es rosa "claro". Se está usando en el fondo de los chips en el filtro.
+  final Color _colorTerciario = Color.fromARGB(255, 255, 30, 154);
+  //Color Blanco/Gris de la barra de navegación.
+  final Color _colorGris = Color.fromARGB(255, 255, 245, 245);
 
   //Variable que almacena la fecha elegida por el usuario para su evento en calendario.
   DateTime _fechaElegida = DateTime.now();
@@ -661,8 +670,8 @@ class _PPrincipalState extends State<PPrincipal> {
 
             //DECORACIÓN PARA EL CONTENEDOR DE LA TARJETA GRANDE
             decoration: BoxDecoration(
-              color: Colors.pinkAccent,
-              border: Border.all(width: 6, color: Colors.pinkAccent),
+              color: _colorPrincipal,
+              border: Border.all(width: 6, color: _colorPrincipal),
               borderRadius: BorderRadius.circular(8),
             ),
 
@@ -680,7 +689,7 @@ class _PPrincipalState extends State<PPrincipal> {
                     //GRANDE
                     decoration: BoxDecoration(
                         border:
-                            Border.all(width: 6, color: Colors.pink.shade800),
+                            Border.all(width: 6, color: _colorSecundario),
                         borderRadius: BorderRadius.circular(2)),
 
                     //IMAGEN DE LA TARJETA GRANDE
@@ -741,8 +750,8 @@ class _PPrincipalState extends State<PPrincipal> {
                 //CONTENEDOR PARA EL ENLACE WEB
                 Container(
                   decoration: BoxDecoration(
-                      color: Colors.pink.shade800,
-                      border: Border.all(width: 8, color: Colors.pink.shade800),
+                      color: _colorSecundario,
+                      border: Border.all(width: 8, color: _colorSecundario),
                       borderRadius: BorderRadius.circular(6)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -751,7 +760,7 @@ class _PPrincipalState extends State<PPrincipal> {
                       //COLOCARSE EL ENLACE DINÁMICAMENTE
                       ElevatedButton(
                           style: TextButton.styleFrom(
-                              backgroundColor: Colors.pinkAccent,
+                              backgroundColor: _colorPrincipal,
                               foregroundColor: Colors.black,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(2),
@@ -779,18 +788,7 @@ class _PPrincipalState extends State<PPrincipal> {
                   children: [
                     ElevatedButton(
                       style: TextButton.styleFrom(
-                          backgroundColor: Colors.pink.shade800,
-                          foregroundColor: Colors.white,
-                          textStyle: TextStyle(fontWeight: FontWeight.bold),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          )),
-                      onPressed: () => _agregarAlCalendario(doc['nombre']),
-                      child: Text("Agendar"),
-                    ),
-                    ElevatedButton(
-                      style: TextButton.styleFrom(
-                          backgroundColor: Colors.pink.shade800,
+                          backgroundColor: _colorSecundario,
                           foregroundColor: Colors.white,
                           textStyle: TextStyle(fontWeight: FontWeight.bold),
                           shape: RoundedRectangleBorder(
@@ -798,6 +796,17 @@ class _PPrincipalState extends State<PPrincipal> {
                           )),
                       onPressed: () => Navigator.pop(context),
                       child: Text("Cerrar"),
+                    ),
+                    ElevatedButton(
+                      style: TextButton.styleFrom(
+                          backgroundColor: _colorSecundario,
+                          foregroundColor: Colors.white,
+                          textStyle: TextStyle(fontWeight: FontWeight.bold),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          )),
+                      onPressed: () => _agregarAlCalendario(doc['nombre']),
+                      child: Text("Agendar"),
                     ),
                   ],
                 )
@@ -811,7 +820,7 @@ class _PPrincipalState extends State<PPrincipal> {
   }
 
   //Función usada en el método de agregar al calendario.
-  void _mostrarSelectorFecha() {
+  void _mostrarSelectorDia() {
     showDatePicker(
             context: context,
             locale: const Locale('es'),
@@ -819,10 +828,10 @@ class _PPrincipalState extends State<PPrincipal> {
             firstDate: DateTime.now(),
             lastDate: DateTime.now().add(Duration(days: 365)),
             initialEntryMode: DatePickerEntryMode.calendarOnly,
-            helpText: "Elige la fecha",
+            helpText: "Elige el día",
             cancelText: "Cancelar",
-            confirmText: "Confirmar"
-    ).then((value) {
+            confirmText: "Confirmar")
+        .then((value) {
       setState(() {
         _fechaElegida = value!;
       });
@@ -860,45 +869,52 @@ class _PPrincipalState extends State<PPrincipal> {
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                color: Colors.pinkAccent,
-                border: Border.all(width: 4, color: Colors.pinkAccent),
+                color: _colorPrincipal,
+                border: Border.all(width: 4, color: _colorPrincipal),
                 borderRadius: BorderRadius.circular(8)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                ElevatedButton(
-                    style: TextButton.styleFrom(
-                        backgroundColor: Colors.pink.shade800,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        )),
-                    onPressed: _mostrarSelectorFecha,
-                    child: Text(
-                      "Elige el día",
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          decoration: TextDecoration.none),
-                    )
+                //Título
+                Text("Detalles del Evento",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 32,
+                        color: Colors.black,
+                        decoration: TextDecoration.none,
+                        fontWeight: FontWeight.bold)
                 ),
 
-                SizedBox(height: 8),
-
-                ElevatedButton(
-                    style: TextButton.styleFrom(
-                        backgroundColor: Colors.pink.shade800,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        )),
-                    onPressed: _mostrarSelectorHora,
-                    child: Text(
-                      "Elige la hora",
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          decoration: TextDecoration.none),
-                    )
+                //Subtítulo
+                Text("Elige Día y Hora:",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        decoration: TextDecoration.none)
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: _colorSecundario,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            )),
+                        onPressed: _mostrarSelectorDia,
+                        child: Icon(Icons.today, color: Colors.white)),
+                    ElevatedButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: _colorSecundario,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            )),
+                        onPressed: _mostrarSelectorHora,
+                        child: Icon(Icons.schedule, color: Colors.white)),
+                  ],
                 ),
 
                 SizedBox(height: 8),
@@ -906,10 +922,10 @@ class _PPrincipalState extends State<PPrincipal> {
                 Container(
                   padding: EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                      color: Colors.pinkAccent,
+                      color: _colorPrincipal,
                       borderRadius: BorderRadius.circular(8),
                       border:
-                          Border.all(width: 8, color: Colors.pink.shade800)),
+                          Border.all(width: 8, color: _colorSecundario)),
                   child: ColorPicker(
                     borderRadius: 4,
                     spacing: 4,
@@ -925,9 +941,10 @@ class _PPrincipalState extends State<PPrincipal> {
                     },
                     selectedPickerTypeColor: Colors.white,
                     heading: Text(
-                      "Elige el color",
+                      "Elige un Color:",
                       style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                           color: Colors.black,
                           decoration: TextDecoration.none),
                     ),
@@ -943,86 +960,42 @@ class _PPrincipalState extends State<PPrincipal> {
 
                 SizedBox(height: 8),
 
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                      "Notificaciones",
-                      style: TextStyle(
-                        fontSize: 18,
-                      )
-                  ),
+                Text("Notificaciones:",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        decoration: TextDecoration.none)
                 ),
+
+                SizedBox(height: 8),
+
                 TextFormField(
-                  onChanged: ((value) {
-                    setState(() {
-                      _minutosAntesEvento = int.parse(value);
-                    });
-                  }),
-                  controller: _controladorMinutos,
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: "Minutos antes del evento",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.pink.shade800, width: 2),
-                    ),
-                    labelStyle: TextStyle(
-                      color: Colors.black,
-                    )
-                  )
-                ),
+                    onChanged: ((value) {
+                      setState(() {
+                        _minutosAntesEvento = int.parse(value);
+                      });
+                    }),
+                    controller: _controladorMinutos,
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        labelText: "Minutos antes del evento",
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                        ))),
+
+                SizedBox(height: 8),
 
                 //ESPACIO PARA LOS BOTONES DE LA PANTALLA DE AGENDAR EVENTO
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    //CONTENEDOR DEL BOTÓN DE FINALIZAR AGENDA
-                    ElevatedButton(
-                        style: TextButton.styleFrom(
-                            backgroundColor: Colors.pink.shade800,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            )),
-                        onPressed: () async {
-                          //Llamada a función para agendar un evento
-                          //al calendario y permite observarlo en el
-                          // calendario. Necesita el nombre del
-                          //evento a agendar
-                          DateTime fechaReunion = DateTime(_fechaElegida.year, _fechaElegida.month, _fechaElegida.day, _horaElegida.hour, _horaElegida.minute);
-                          // Guardar directamente en Firestore para evitar que falle
-                          // cuando la página Calendario aún no está construida en el PageView
-                          final user = FirebaseAuth.instance.currentUser;
-                          if (user != null) {
-                            final eventoData = {
-                              'uid': user.uid,
-                              'startTime': fechaReunion.toIso8601String(),
-                              'endTime': fechaReunion.toIso8601String(),
-                              'subject': titulo,
-                              'color': _colorElegido.value32bit,
-                              'idNotificacion': user.uid.hashCode + fechaReunion.day,
-                              'minutos': _minutosAntesEvento
-                            };
-                            await FirebaseFirestore.instance.collection('eventos').add(eventoData);
-                            Notificacion.programarNotificacion(fechaReunion, _minutosAntesEvento, titulo);
-                          }
-
-                          //Reestablece los valores
-                          _fechaElegida = DateTime.now();
-                          _horaElegida = TimeOfDay.now();
-                          _colorElegido = Colors.pink;
-                          _minutosAntesEvento = 0;
-
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(
-                          "¡Todo Listo!",
-                          style: TextStyle(color: Colors.white),
-                        )),
-
                     //CONTENEDOR DEL BOTÓN PARA CERRAR LA TARJETA DE AGENDAR
                     ElevatedButton(
                         style: TextButton.styleFrom(
-                            backgroundColor: Colors.pink.shade800,
+                            backgroundColor: _colorSecundario,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(4),
                             )),
@@ -1036,6 +1009,58 @@ class _PPrincipalState extends State<PPrincipal> {
                         },
                         child: Text(
                           "Cancelar",
+                          style: TextStyle(color: Colors.white),
+                        )),
+
+                    //CONTENEDOR DEL BOTÓN DE FINALIZAR AGENDA
+                    ElevatedButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: _colorSecundario,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            )),
+                        onPressed: () async {
+                          //Llamada a función para agendar un evento
+                          //al calendario y permite observarlo en el
+                          // calendario. Necesita el nombre del
+                          //evento a agendar
+                          DateTime fechaReunion = DateTime(
+                              _fechaElegida.year,
+                              _fechaElegida.month,
+                              _fechaElegida.day,
+                              _horaElegida.hour,
+                              _horaElegida.minute);
+                          // Guardar directamente en Firestore para evitar que falle
+                          // cuando la página Calendario aún no está construida en el PageView
+                          final user = FirebaseAuth.instance.currentUser;
+                          if (user != null) {
+                            final eventoData = {
+                              'uid': user.uid,
+                              'startTime': fechaReunion.toIso8601String(),
+                              'endTime': fechaReunion.toIso8601String(),
+                              'subject': titulo,
+                              'color': _colorElegido.value32bit,
+                              'idNotificacion':
+                                  user.uid.hashCode + fechaReunion.day,
+                              'minutos': _minutosAntesEvento
+                            };
+                            await FirebaseFirestore.instance
+                                .collection('eventos')
+                                .add(eventoData);
+                            Notificacion.programarNotificacion(
+                                fechaReunion, _minutosAntesEvento, titulo);
+                          }
+
+                          //Reestablece los valores
+                          _fechaElegida = DateTime.now();
+                          _horaElegida = TimeOfDay.now();
+                          _colorElegido = Colors.pink;
+                          _minutosAntesEvento = 0;
+
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          "¡Todo Listo!",
                           style: TextStyle(color: Colors.white),
                         )),
                   ],
@@ -1059,10 +1084,9 @@ class _PPrincipalState extends State<PPrincipal> {
       margin: EdgeInsets.all(10),
       //DECORACIÓN DEL BORDE DEL CONTENEDOR DE TODA LA TARJETA EN LA PANTALLA PRINCIPAL
       decoration: BoxDecoration(
-          color: Colors.pinkAccent,
-          border: Border.all(width: 6, color: Colors.pinkAccent),
-          borderRadius: BorderRadius.circular(8)
-      ),
+          color: _colorPrincipal,
+          border: Border.all(width: 6, color: _colorPrincipal),
+          borderRadius: BorderRadius.circular(8)),
       //CONTENIDO DENTRO DE LA TARJETA EN LA PANTALLAA PRINCIPAL
       child: Column(
         children: [
@@ -1072,7 +1096,7 @@ class _PPrincipalState extends State<PPrincipal> {
             //DECORACIÓN DEL BORDE DEL CONTENEDOR DE LA IMAGEN EN LA
             //TARJETA DE LA PANTALLA PRINCIPAL
             decoration: BoxDecoration(
-                border: Border.all(width: 4, color: Colors.pink.shade800),
+                border: Border.all(width: 4, color: _colorSecundario),
                 borderRadius: BorderRadius.circular(2)),
 
             //IMAGEN EN LA TARJETA DE LA PÁGINA PRINCIPAL
@@ -1128,7 +1152,7 @@ class _PPrincipalState extends State<PPrincipal> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                       style: TextButton.styleFrom(
-                          backgroundColor: Colors.pink.shade800,
+                          backgroundColor: _colorSecundario,
                           foregroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4),
@@ -1157,18 +1181,15 @@ class _PPrincipalState extends State<PPrincipal> {
       padding: EdgeInsets.all(4),
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
-          color: Colors.pinkAccent,
-          border: Border.all(width: 6, color: Colors.pinkAccent),
-          borderRadius: BorderRadius.circular(8)
-      ),
+          color: _colorPrincipal,
+          border: Border.all(width: 6, color: _colorPrincipal),
+          borderRadius: BorderRadius.circular(8)),
       child: Align(
         alignment: Alignment.center,
         child: Text(
           "Fin de la Lista",
           style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black),
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
     );
@@ -1180,18 +1201,15 @@ class _PPrincipalState extends State<PPrincipal> {
       padding: EdgeInsets.all(4),
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
-          color: Colors.pinkAccent,
-          border: Border.all(width: 6, color: Colors.pinkAccent),
-          borderRadius: BorderRadius.circular(8)
-      ),
+          color: _colorPrincipal,
+          border: Border.all(width: 6, color: _colorPrincipal),
+          borderRadius: BorderRadius.circular(8)),
       child: Align(
         alignment: Alignment.center,
         child: Text(
           "Lo lamentamos, aquí no hay nada. :C",
           style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black),
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
     );
@@ -1200,7 +1218,6 @@ class _PPrincipalState extends State<PPrincipal> {
   //============================================================//
   // MÉTODOS DEL FILTRO                                         //
   //============================================================//
-
   void _mostrarFiltrador() {
     showDialog(
       context: context,
@@ -1214,8 +1231,8 @@ class _PPrincipalState extends State<PPrincipal> {
 
             //DECORACIÓN PARA EL CONTENEDOR DE LA TARJETA GRANDE
             decoration: BoxDecoration(
-              color: Colors.pinkAccent,
-              border: Border.all(width: 6, color: Colors.pinkAccent),
+              color: _colorPrincipal,
+              border: Border.all(width: 6, color: _colorPrincipal),
               borderRadius: BorderRadius.circular(8),
             ),
 
@@ -1228,16 +1245,14 @@ class _PPrincipalState extends State<PPrincipal> {
                   builder: (context, setInnerState) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //Titulo
-                      Align(
-                        alignment: AlignmentGeometry.center,
-                        child: Text("Filtro",
-                            softWrap: true,
-                            style: TextStyle(
-                                fontSize: 32,
-                                color: Colors.black,
-                                decoration: TextDecoration.none,
-                                fontWeight: FontWeight.bold)),
+                      //Título
+                      Text("Filtro",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 32,
+                              color: Colors.black,
+                              decoration: TextDecoration.none,
+                              fontWeight: FontWeight.bold)
                       ),
 
                       //Subtítulo
@@ -1247,7 +1262,8 @@ class _PPrincipalState extends State<PPrincipal> {
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
-                              decoration: TextDecoration.none)),
+                              decoration: TextDecoration.none)
+                      ),
                       Wrap(
                         spacing: 4.0,
                         runSpacing: 1.0,
@@ -1255,7 +1271,7 @@ class _PPrincipalState extends State<PPrincipal> {
                           return ChoiceChip(
                             label: Text(tipo),
                             selected: _seleccionTipo == tipo,
-                            selectedColor: Colors.pink.shade700,
+                            selectedColor: _colorTerciario,
                             backgroundColor: Colors.white70,
                             onSelected: (seleccionado) {
                               setInnerState(() {
@@ -1299,10 +1315,10 @@ class _PPrincipalState extends State<PPrincipal> {
                             isDense: true,
                             enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: Colors.pink.shade800, width: 4.0)),
+                                    color: _colorSecundario, width: 4.0)),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: Colors.pink.shade800, width: 4.0)),
+                                    color: _colorSecundario, width: 4.0)),
                           ),
                           alignment: AlignmentDirectional.centerStart,
                           menuMaxHeight: 200,
@@ -1310,7 +1326,7 @@ class _PPrincipalState extends State<PPrincipal> {
                               true, //Menú desplegable con igual tamaño al botón.
                           isExpanded: true, //El texto no empuja al botón.
                           padding: EdgeInsets.all(4),
-                          dropdownColor: Colors.pink,
+                          dropdownColor: _colorPrincipal,
                         ),
                       ),
 
@@ -1321,7 +1337,25 @@ class _PPrincipalState extends State<PPrincipal> {
                         children: [
                           ElevatedButton(
                             style: TextButton.styleFrom(
-                                backgroundColor: Colors.pink.shade800,
+                                backgroundColor: _colorSecundario,
+                                foregroundColor: Colors.white,
+                                textStyle:
+                                TextStyle(fontWeight: FontWeight.bold),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                )),
+                            onPressed: () {
+                              setInnerState(() {
+                                _seleccionTipo = null;
+                                _seleccionAlcaldia = null;
+                              });
+                              _limpiarFiltro();
+                            },
+                            child: Text("Limpiar Filtro"),
+                          ),
+                          ElevatedButton(
+                            style: TextButton.styleFrom(
+                                backgroundColor: _colorSecundario,
                                 foregroundColor: Colors.white,
                                 textStyle:
                                     TextStyle(fontWeight: FontWeight.bold),
@@ -1334,24 +1368,6 @@ class _PPrincipalState extends State<PPrincipal> {
                               Navigator.pop(context); // Close the filter card
                             },
                             child: Text("Filtrar"),
-                          ),
-                          ElevatedButton(
-                            style: TextButton.styleFrom(
-                                backgroundColor: Colors.pink.shade800,
-                                foregroundColor: Colors.white,
-                                textStyle:
-                                    TextStyle(fontWeight: FontWeight.bold),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                )),
-                            onPressed: () {
-                              setInnerState(() {
-                                _seleccionTipo = null;
-                                _seleccionAlcaldia = null;
-                              });
-                              _limpiarFiltro();
-                            },
-                            child: Text("Limpiar Filtro"),
                           ),
                         ],
                       )
@@ -1419,14 +1435,11 @@ class _PPrincipalState extends State<PPrincipal> {
                   child: Column(children: [
                     Text("¡Hola!",
                         style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 50,
-                            fontWeight: FontWeight.bold)),
+                            fontSize: 50, fontWeight: FontWeight.bold)),
                     Text("¿A dónde irás hoy?",
                         style: TextStyle(
                             fontSize: 28, fontWeight: FontWeight.bold))
-                  ])
-              ),
+                  ])),
 
               /* CÓDIGO DE LA TARJETA QUE SE LLENA CON LOS ELEMENTOS DE 'datosFirebase' */
               if (_resultadosLugares.isNotEmpty) ...[
@@ -1445,13 +1458,13 @@ class _PPrincipalState extends State<PPrincipal> {
           ? FloatingActionButton(
               tooltip: 'Filtrar',
               mini: true,
-              backgroundColor: Colors.grey.shade100,
+              backgroundColor: _colorGris,
               onPressed: _mostrarFiltrador,
               child: Icon(Icons.filter_alt))
           : null,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _indiceMenu,
-        backgroundColor: Colors.grey.shade100,
+        backgroundColor: _colorGris,
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.black38,
         onTap: _itemPresionado,

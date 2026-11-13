@@ -16,6 +16,11 @@ class Calendario extends StatefulWidget {
 }
 
 class CalendarioState extends State<Calendario> {
+  //Color Principal es rosa mexicano. Se usa en el fondo de las tarjetas.
+  final Color _colorPrincipal = Color.fromARGB(255, 228, 0, 124);
+  //Color Secundario es rosa "obscuro". Se usa en el fondo de los botones.
+  final Color _colorSecundario = Color.fromARGB(255, 137, 0, 75);
+  
   //Variables que almacenan la fecha y hora elegidas por el usuario para su evento en calendario.
   DateTime _fechaElegida = DateTime.now();
   TimeOfDay _horaElegida = TimeOfDay.now();
@@ -89,14 +94,14 @@ class CalendarioState extends State<Calendario> {
 
 
   /* FUNCIONES PARA EDITAR UN EVENTO DEL CALENDARIO */
-  void _mostrarSelectorFecha() {
+  void _mostrarSelectorDia() {
     showDatePicker(
         context: context,
         initialDate: _fechaCargada,
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(Duration(days: 365)),
         initialEntryMode: DatePickerEntryMode.calendarOnly,
-        helpText: "Elige la fecha",
+        helpText: "Elige el día",
         cancelText: "Cancelar",
         confirmText: "Confirmar"
     ).then((value) {
@@ -141,45 +146,54 @@ class CalendarioState extends State<Calendario> {
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                color: Colors.pinkAccent,
-                border: Border.all(width: 4, color: Colors.pinkAccent),
+                color: _colorPrincipal,
+                border: Border.all(width: 4, color: _colorPrincipal),
                 borderRadius: BorderRadius.circular(8)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                ElevatedButton(
-                    style: TextButton.styleFrom(
-                        backgroundColor: Colors.pink.shade800,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        )),
-                    onPressed: _mostrarSelectorFecha,
-                    child: Text(
-                      "Elige el día",
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          decoration: TextDecoration.none),
-                    )
+                //Título
+                Text("Detalles del Evento",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 32,
+                        color: Colors.black,
+                        decoration: TextDecoration.none,
+                        fontWeight: FontWeight.bold)
                 ),
 
-                SizedBox(height: 8),
-
-                ElevatedButton(
-                    style: TextButton.styleFrom(
-                        backgroundColor: Colors.pink.shade800,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        )),
-                    onPressed: _mostrarSelectorHora,
-                    child: Text(
-                      "Elige la hora",
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          decoration: TextDecoration.none),
-                    )
+                //Subtítulo
+                Text("Elige Día y Hora:",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        decoration: TextDecoration.none)
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: _colorSecundario,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            )),
+                        onPressed: _mostrarSelectorDia,
+                        child: Icon(Icons.today, color: Colors.white)
+                    ),
+                    ElevatedButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: _colorSecundario,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            )),
+                        onPressed: _mostrarSelectorHora,
+                        child: Icon(Icons.schedule, color: Colors.white)
+                    ),
+                  ],
                 ),
 
                 SizedBox(height: 8),
@@ -187,10 +201,10 @@ class CalendarioState extends State<Calendario> {
                 Container(
                   padding: EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                      color: Colors.pinkAccent,
+                      color: _colorPrincipal,
                       borderRadius: BorderRadius.circular(8),
                       border:
-                      Border.all(width: 8, color: Colors.pink.shade800)),
+                      Border.all(width: 8, color: _colorSecundario)),
                   child: ColorPicker(
                     borderRadius: 4,
                     spacing: 4,
@@ -208,7 +222,8 @@ class CalendarioState extends State<Calendario> {
                     heading: Text(
                       "Elige el color",
                       style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                           color: Colors.black,
                           decoration: TextDecoration.none),
                     ),
@@ -224,15 +239,17 @@ class CalendarioState extends State<Calendario> {
 
                 SizedBox(height: 8),
 
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                      "Notificaciones",
-                      style: TextStyle(
-                        fontSize: 18,
-                      )
-                  ),
+                Text("Notificaciones:",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        decoration: TextDecoration.none)
                 ),
+
+                SizedBox(height: 8),
+
                 TextFormField(
                     onChanged: ((value) {
                       setState(() {
@@ -253,38 +270,16 @@ class CalendarioState extends State<Calendario> {
                     )
                 ),
 
+                SizedBox(height: 8),
+
                 //ESPACIO PARA LOS BOTONES DE LA PANTALLA DE AGENDAR EVENTO
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    //CONTENEDOR DEL BOTÓN DE FINALIZAR AGENDA
-                    ElevatedButton(
-                        style: TextButton.styleFrom(
-                            backgroundColor: Colors.pink.shade800,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            )),
-                        onPressed: () {
-                          DateTime fechaReunion = DateTime(_fechaElegida.year, _fechaElegida.month, _fechaElegida.day, _horaElegida.hour, _horaElegida.minute);
-                          _guardarCambiosReunion(reunion,fechaReunion, fechaReunion, _colorElegido, _minutosAntesEvento);
-
-                          //Reestablece los valores
-                          _fechaElegida = DateTime.now();
-                          _horaElegida = TimeOfDay.now();
-                          fechaReunion = DateTime.now();
-                          _colorElegido = Colors.pinkAccent;
-
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(
-                          "Guardar cambios",
-                          style: TextStyle(color: Colors.white),
-                        )),
-
                     //CONTENEDOR DEL BOTÓN PARA CERRAR LA TARJETA DE AGENDAR
                     ElevatedButton(
                         style: TextButton.styleFrom(
-                            backgroundColor: Colors.pink.shade800,
+                            backgroundColor: _colorSecundario,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(4),
                             )),
@@ -301,6 +296,31 @@ class CalendarioState extends State<Calendario> {
                           "Cerrar",
                           style: TextStyle(color: Colors.white),
                         )),
+
+                    //CONTENEDOR DEL BOTÓN DE FINALIZAR AGENDA
+                    ElevatedButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: _colorSecundario,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            )),
+                        onPressed: () {
+                          DateTime fechaReunion = DateTime(_fechaElegida.year, _fechaElegida.month, _fechaElegida.day, _horaElegida.hour, _horaElegida.minute);
+                          _guardarCambiosReunion(reunion,fechaReunion, fechaReunion, _colorElegido, _minutosAntesEvento);
+
+                          //Reestablece los valores
+                          _fechaElegida = DateTime.now();
+                          _horaElegida = TimeOfDay.now();
+                          fechaReunion = DateTime.now();
+                          _colorElegido = Colors.pink;
+
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          "Guardar cambios",
+                          style: TextStyle(color: Colors.white),
+                        )
+                    ),
                   ],
                 )
               ],
@@ -372,13 +392,23 @@ class CalendarioState extends State<Calendario> {
     showDialog(
       builder: (context) {
         return AlertDialog(
-          title: Text("Eliminar Evento"),
-          content: Text("¿Estás seguro de querer eliminar este evento de tu calendario?"),
+          insetPadding: EdgeInsets.all(10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadiusGeometry.circular(8)
+          ),
+          backgroundColor: _colorPrincipal,
+          title: Text(
+              "¿Eliminar Evento?",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold
+              )
+          ),
+          content: Text("Presiona 'Confirmar' si estás segurx de querer eliminar este evento de tu calendario. Esta acción NO se puede deshacer."),
           actions: [
             //BOTÓN PARA CANCELAR LA ELIMINACIÓN
             ElevatedButton(
                 style: TextButton.styleFrom(
-                    backgroundColor: Colors.pink.shade800,
+                    backgroundColor: _colorSecundario,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     )
@@ -397,7 +427,7 @@ class CalendarioState extends State<Calendario> {
             //BOTÓN DE CONFIRMAR LA ELIMINACIÓN
             ElevatedButton(
                 style: TextButton.styleFrom(
-                    backgroundColor: Colors.pink.shade800,
+                    backgroundColor: _colorSecundario,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     )
@@ -423,7 +453,7 @@ class CalendarioState extends State<Calendario> {
                   }
                 },
                 child: Text(
-                  "Sí, eliminar",
+                  "Confirmar",
                   style: TextStyle(
                       color: Colors.white
                   ),
@@ -460,7 +490,7 @@ class CalendarioState extends State<Calendario> {
               decoration: BoxDecoration(
                   border: Border.all(
                       width: 4,
-                      color: Colors.pink.shade800
+                      color: _colorSecundario
                   ),
                   borderRadius: BorderRadius.circular(8)
               ),
@@ -470,14 +500,14 @@ class CalendarioState extends State<Calendario> {
                 view: CalendarView.month,
                 initialSelectedDate: DateTime.now(),
                 headerStyle: CalendarHeaderStyle(
-                    backgroundColor: Colors.pinkAccent,
+                    backgroundColor: _colorPrincipal,
                     textStyle: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black
                     )
                 ),
                 cellBorderColor: Colors.transparent,
-                todayHighlightColor: Colors.pink,
+                todayHighlightColor: _colorPrincipal,
                 selectionDecoration: BoxDecoration(
                     color: Colors.transparent
                 ),

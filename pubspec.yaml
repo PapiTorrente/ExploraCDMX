@@ -39,10 +39,7 @@ dependencies:
   syncfusion_flutter_calendar: ^35.1.40+1
   syncfusion_localizations: ^35.1.40+1
 
-  #Navbar
-  cupertino_icons: ^2.0.0
-
-  #Otros
+  #Icono de Google en Inicio de Sesión
   font_awesome_flutter: ^11.0.0
 
 dev_dependencies:
@@ -55,6 +52,15 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+  fonts:
+    - family: Sansation
+      fonts:
+        - asset: fonts/Sansation-Bold.ttf
+        - asset: fonts/Sansation-BoldItalic.ttf
+        - asset: fonts/Sansation-Italic.ttf
+        - asset: fonts/Sansation-Light.ttf
+        - asset: fonts/Sansation-LightItalic.ttf
+        - asset: fonts/Sansation-Regular.ttf
 
 flutter_launcher_icons:
   android: true

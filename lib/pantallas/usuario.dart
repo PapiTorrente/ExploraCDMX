@@ -46,6 +46,11 @@ class Usuario extends StatefulWidget {
 }
 
 class _UsuarioState extends State<Usuario> {
+  //Color Principal es rosa mexicano. Se usa en el fondo de los botones "poco" importantes.
+  final Color _colorPrincipal = Color.fromARGB(255, 228, 0, 124);
+  //Color Secundario es rosa "obscuro". Se usa en el fondo de los botones "muy" importantes.
+  final Color _colorSecundario = Color.fromARGB(255, 137, 0, 75);
+
   //Correo del usuario.
   late final correo = FirebaseAuth.instance.currentUser?.email;
 
@@ -98,7 +103,7 @@ class _UsuarioState extends State<Usuario> {
             },
             style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(16),
-                backgroundColor: Colors.pinkAccent,
+                backgroundColor: _colorPrincipal,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 )
@@ -120,7 +125,7 @@ class _UsuarioState extends State<Usuario> {
             onPressed: Notificacion().enviarNotificacion,
             style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(16),
-                backgroundColor: Colors.pinkAccent,
+                backgroundColor: _colorPrincipal,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 )
@@ -157,7 +162,7 @@ class _UsuarioState extends State<Usuario> {
           ElevatedButton(
               style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(16),
-                  backgroundColor: Colors.pinkAccent,
+                  backgroundColor: _colorPrincipal,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   )
@@ -188,7 +193,7 @@ class _UsuarioState extends State<Usuario> {
             },
             style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 27),
-                backgroundColor: Colors.pinkAccent,
+                backgroundColor: _colorPrincipal,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 )
@@ -223,6 +228,23 @@ class _UsuarioState extends State<Usuario> {
                       color: Colors.white
                   )
               )
+          ),
+
+          Expanded(
+            child: SizedBox()
+          ),
+
+          //VERSIÓN
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              "v3.0.1",
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+                decoration: TextDecoration.none
+              )
+            ),
           )
         ]
     );
