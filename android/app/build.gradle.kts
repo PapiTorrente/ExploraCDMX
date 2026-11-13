@@ -10,6 +10,11 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+//Para el futuro:
+// upload-keystore.jks debe de estar dentro de "android/app/"
+// key.properties debe de estar dentro de "android/"
+// Dentro de key.properties rellenar los campos de storePassword, keyPassword, keyAlias y storeFile
+// La ruta de storeFile solo referencia upload-keystore.jks sin "app/"
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
