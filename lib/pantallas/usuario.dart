@@ -54,6 +54,16 @@ class _UsuarioState extends State<Usuario> {
   //Correo del usuario.
   late final correo = FirebaseAuth.instance.currentUser?.email;
 
+  //ESQUELETO MOSTRAR MENSAJES
+  void _mostrarSnackBar(String mensaje, {bool esError = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensaje, textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        backgroundColor: esError ? Colors.redAccent : Colors.green,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -99,7 +109,12 @@ class _UsuarioState extends State<Usuario> {
           //BOTÓN PARA REESTABLECER CONTRASEÑA
           ElevatedButton(
             onPressed: () async {
-              await ServicioAuth().resetPass(email: correo.toString());
+              try {
+                await ServicioAuth().resetPass(email: correo.toString());
+                _mostrarSnackBar("Solicitud enviada. ¡Revisa tu correo!", esError: false);
+              } catch (e) {
+                _mostrarSnackBar("No se pudo envíar la solicitud. Intenta de nuevo.");
+              }
             },
             style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(16),
@@ -189,7 +204,12 @@ class _UsuarioState extends State<Usuario> {
           //BOTÓN PARA CERRAR SESIÓN
           ElevatedButton(
             onPressed: () async {
-              await ServicioAuth().signOut();
+              try {
+                await ServicioAuth().signOut();
+                _mostrarSnackBar("Sesión finalizada con éxito.", esError: false);
+              } catch (e) {
+                _mostrarSnackBar("Problemas al cerrar sesión.");
+              }
             },
             style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 27),
@@ -212,7 +232,12 @@ class _UsuarioState extends State<Usuario> {
           //BOTÓN PARA ELIMINAR USUARIO
           ElevatedButton(
               onPressed: () async {
-                await ServicioAuth().borrarCuenta();
+                try {
+                  await ServicioAuth().borrarCuenta();
+                  _mostrarSnackBar("Cuenta eliminada con éxito.", esError: false);
+                } catch (e) {
+                  _mostrarSnackBar("Problemas al eliminar cuenta.");
+                }
               },
               style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 16, horizontal: 48),
@@ -238,7 +263,7 @@ class _UsuarioState extends State<Usuario> {
           Align(
             alignment: Alignment.center,
             child: Text(
-              "v3.0.1",
+              "v3.0.2",
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,

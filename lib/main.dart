@@ -212,7 +212,7 @@ class _PInicioSesionState extends State<PInicioSesion> {
           await ServicioAuth().signIn(email: email, password: password);
 
       if (user != null) {
-        _mostrarSnackBar("Inicio de sesión exitoso.", isError: false);
+        _mostrarSnackBar("Inicio de sesión exitoso.", esError: false);
       } else {
         _mostrarSnackBar("Error en el inicio de sesión.");
         return;
@@ -236,7 +236,7 @@ class _PInicioSesionState extends State<PInicioSesion> {
     try {
       User? user = await ServicioAuth().signInWithGoogle();
       if (user != null) {
-        _mostrarSnackBar("Sesión iniciada con Google.", isError: false);
+        _mostrarSnackBar("Sesión iniciada con Google.", esError: false);
       }
     } catch (e) {
       _mostrarSnackBar("Error al iniciar sesión con Google.");
@@ -270,11 +270,11 @@ class _PInicioSesionState extends State<PInicioSesion> {
   /* FIN MÉTODO PARA RECUPERAR CONTRASEÑA */
 
   //ESQUELETO MOSTRAR MENSAJES
-  void _mostrarSnackBar(String message, {bool isError = true}) {
+  void _mostrarSnackBar(String mensaje, {bool esError = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.redAccent : Colors.green,
+        content: Text(mensaje, textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        backgroundColor: esError ? Colors.redAccent : Colors.green,
       ),
     );
   }
@@ -441,7 +441,7 @@ class _PRegistroUsuarioState extends State<PRegistroUsuario> {
           await ServicioAuth().signUp(email: email, password: password);
 
       if (user != null) {
-        _mostrarSnackBar("Registro exitoso.", isError: false);
+        _mostrarSnackBar("Registro exitoso.", esError: false);
         Navigator.pop(context);
       }
     } on FirebaseAuthException catch (e) {
@@ -461,11 +461,11 @@ class _PRegistroUsuarioState extends State<PRegistroUsuario> {
   /* FIN MÉTODO DE REGISTRO DE USUARIO */
 
   //ESQUELETO MOSTRAR MENSAJES
-  void _mostrarSnackBar(String message, {bool isError = true}) {
+  void _mostrarSnackBar(String mensaje, {bool esError = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.redAccent : Colors.green,
+        content: Text(mensaje, textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        backgroundColor: esError ? Colors.redAccent : Colors.green,
       ),
     );
   }
@@ -641,6 +641,16 @@ class _PPrincipalState extends State<PPrincipal> {
     setState(() {
       _indiceMenu = indice;
     });
+  }
+
+  //ESQUELETO MOSTRAR MENSAJES
+  void _mostrarSnackBar(String mensaje, {bool esError = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensaje, textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        backgroundColor: esError ? Colors.redAccent : Colors.green,
+      ),
+    );
   }
 
   //============================================================//
@@ -1057,6 +1067,9 @@ class _PPrincipalState extends State<PPrincipal> {
                           _colorElegido = Colors.pink;
                           _minutosAntesEvento = 0;
 
+                          //MOSTRAR MENSAJE DE CONFIRMACIÓN
+                          _mostrarSnackBar("¡Evento Agendado!", esError: false);
+
                           Navigator.of(context).pop();
                         },
                         child: Text(
@@ -1353,6 +1366,7 @@ class _PPrincipalState extends State<PPrincipal> {
                                 _seleccionAlcaldia = null;
                               });
                               _limpiarFiltro();
+                              _mostrarSnackBar("¡Filtros Retirados!", esError: false);
                             },
                             child: Text("Limpiar Filtro"),
                           ),
@@ -1368,7 +1382,8 @@ class _PPrincipalState extends State<PPrincipal> {
                             onPressed: () {
                               _aplicarFiltros(
                                   _seleccionTipo, _seleccionAlcaldia);
-                              Navigator.pop(context); // Close the filter card
+                              _mostrarSnackBar("¡Filtros Aplicados!", esError: false);
+                              Navigator.pop(context);
                             },
                             child: Text("Filtrar"),
                           ),
