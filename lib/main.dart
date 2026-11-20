@@ -160,7 +160,7 @@ class AuthWrapper extends StatelessWidget {
 
         // Si el usuario SI está logueado, muestra la página de principa.
         if (datosFirebase.hasData && datosFirebase.data != null) {
-          return const PPrincipal(title: 'Hora de Explorar');
+          return const PPrincipal(title: 'Explora CDMX');
         }
 
         // Si el usuario NO está logueado, muestra la página de inicio de sesión.
@@ -289,7 +289,7 @@ class _PInicioSesionState extends State<PInicioSesion> {
               spacing: 4,
               children: [
             Column(children: [
-              Text("ExploraCDMX",
+              Text("Explora CDMX",
                   style: TextStyle(fontSize: 38, fontWeight: FontWeight.bold)),
               Text("Inicia Sesión",
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
@@ -480,7 +480,7 @@ class _PRegistroUsuarioState extends State<PRegistroUsuario> {
               spacing: 4,
               children: [
             Column(children: [
-              Text("ExploraCDMX",
+              Text("Explora CDMX",
                   style: TextStyle(fontSize: 38, fontWeight: FontWeight.bold)),
               Text("Crea tu Cuenta",
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
