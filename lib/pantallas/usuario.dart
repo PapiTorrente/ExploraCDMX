@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart'; //Import para usar widgets y hacer interfaces
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:url_launcher/url_launcher.dart'; //Import para abrir enlaces.
 
 //Imports para usar Firebase
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 //Imports para usar sesiones de Google
@@ -53,6 +55,7 @@ class _UsuarioState extends State<Usuario> {
 
   //Correo del usuario.
   late final correo = FirebaseAuth.instance.currentUser?.email;
+  late final UID = FirebaseAuth.instance.currentUser?.uid;
 
   //ESQUELETO MOSTRAR MENSAJES
   void _mostrarSnackBar(String mensaje, {bool esError = true}) {
@@ -85,6 +88,58 @@ class _UsuarioState extends State<Usuario> {
                 Align(
                   alignment: Alignment.center,
                   child: Text(
+                    "Tu ID de Usuario es:",
+                    style: TextStyle(
+                        fontSize: 22
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        UID.toString(),
+                        style: TextStyle(
+                            fontSize: 20
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.all(16),
+                            backgroundColor: _colorPrincipal,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            )
+                        ),
+                        onPressed: (){
+                          Clipboard.setData(ClipboardData(text: UID.toString()));
+                          _mostrarSnackBar("ID copiado al portapapeles.", esError: false);
+                        },
+                        child: Icon(Icons.copy, color: Colors.black),
+                      ),
+                    )
+                  ]
+                ),
+
+              ],
+            ),
+          ),
+
+          SizedBox(height: 8),
+
+          Container(
+            padding: EdgeInsets.all(3),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
                     "Tu correo es:",
                     style: TextStyle(
                         fontSize: 22
@@ -104,7 +159,7 @@ class _UsuarioState extends State<Usuario> {
             ),
           ),
 
-          SizedBox(height: 16),
+          SizedBox(height: 8),
 
           //BOTÓN PARA REESTABLECER CONTRASEÑA
           ElevatedButton(
@@ -132,7 +187,7 @@ class _UsuarioState extends State<Usuario> {
             ),
           ),
 
-          SizedBox(height: 16),
+          SizedBox(height: 8),
 
           //BOTÓN PARA ENVIAR NOTIFICACIÓN (DEBUG)
           /*
@@ -154,12 +209,12 @@ class _UsuarioState extends State<Usuario> {
             ),
           ),
 
-          SizedBox(height: 16),
+          SizedBox(height: 8),
            */
 
           const Divider(),
 
-          SizedBox(height: 16),
+          SizedBox(height: 8),
 
           Container(
             padding: EdgeInsets.all(3),
@@ -171,7 +226,7 @@ class _UsuarioState extends State<Usuario> {
             ),
           ),
 
-          SizedBox(height: 16),
+          SizedBox(height: 8),
 
           //BOTÓN PARA ENVIAR UN CORREO
           ElevatedButton(
@@ -183,7 +238,7 @@ class _UsuarioState extends State<Usuario> {
                   )
               ),
               onPressed: () => launchUrl(
-                  Uri.parse('mailto:exploracdmx.nacionalurbenia@gmail.com'),
+                  Uri.parse('mailto:exploracdmx.nacionalurbenia@gmail.com?body=UID:%20$UID'),
                   mode: LaunchMode.externalApplication
               ),
               child: Text(
@@ -195,11 +250,11 @@ class _UsuarioState extends State<Usuario> {
               )
           ),
 
-          SizedBox(height: 16),
+          SizedBox(height: 8),
 
           const Divider(),
 
-          SizedBox(height: 16),
+          SizedBox(height: 8),
 
           //BOTÓN PARA CERRAR SESIÓN
           ElevatedButton(
@@ -227,16 +282,19 @@ class _UsuarioState extends State<Usuario> {
             ),
           ),
 
-          SizedBox(height: 16),
+          SizedBox(height: 8),
 
           //BOTÓN PARA ELIMINAR USUARIO
           ElevatedButton(
               onPressed: () async {
                 try {
+                  final eventosUsuario = await FirebaseFirestore.instance.collection('evento').where('uid', isEqualTo: UID).get();
+                  for (var evento in eventosUsuario.docs) {
+                    await evento.reference.delete();
+                  }
                   await ServicioAuth().borrarCuenta();
-                  _mostrarSnackBar("Cuenta eliminada con éxito.", esError: false);
                 } catch (e) {
-                  _mostrarSnackBar("Problemas al eliminar cuenta.");
+                  _mostrarSnackBar("Problemas al borrar cuenta.");
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -263,7 +321,7 @@ class _UsuarioState extends State<Usuario> {
           Align(
             alignment: Alignment.center,
             child: Text(
-              "v3.0.2",
+              "v3.0.3",
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,

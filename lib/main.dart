@@ -106,7 +106,8 @@ class ServicioAuth {
         scopeHint: ['email'],
       );
 
-      final GoogleSignInAuthentication googleAuth = account.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await account.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
@@ -257,15 +258,10 @@ class _PInicioSesionState extends State<PInicioSesion> {
 
   /* MÉTODO PARA RECUPERAR CONTRASEÑA */
   void _recuperarContrasenia() {
-    final email = _controladorCorreo.text.trim();
-
-    if (email.isEmpty) {
-      _mostrarSnackBar(
-          "Error. No hay correo para enviar recuperación de contraseña.");
-    }
-
-    ServicioAuth().resetPass(email: email);
-    _mostrarSnackBar("Correo enviado con éxito.");
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const PRecuperacionCuenta()),
+    );
   }
   /* FIN MÉTODO PARA RECUPERAR CONTRASEÑA */
 
@@ -316,7 +312,9 @@ class _PInicioSesionState extends State<PInicioSesion> {
                     controller: _controladorContra,
                     obscureText: true,
                     decoration: InputDecoration(
-                        labelText: 'Contraseña', border: OutlineInputBorder()),
+                        labelText: 'Contraseña',
+                        border: OutlineInputBorder(),
+                    ),
                   ),
                   SizedBox(height: 16),
                 ])),
@@ -524,6 +522,104 @@ class _PRegistroUsuarioState extends State<PRegistroUsuario> {
                   style: TextStyle(fontSize: 18, color: Colors.white)),
             )
           ])),
+    );
+  }
+}
+
+//============================================================//
+// PÁGINA DE RECUPERACIÓN DE CUENTA                           //
+//============================================================//
+class PRecuperacionCuenta extends StatefulWidget {
+  const PRecuperacionCuenta({super.key});
+
+  @override
+  State<PRecuperacionCuenta> createState() => _PRecuperacionCuentaState();
+}
+
+class _PRecuperacionCuentaState extends State<PRecuperacionCuenta> {
+  //Color Principal es rosa "claro" y brilloso. RUS significa 'Recuperacion Cuenta State'.
+  final Color _colorPrincipal_RCS = Color.fromARGB(255, 228, 0, 124);
+
+  //Controlador de autenticación por correo y contraseña
+  final TextEditingController _controladorCorreo = TextEditingController();
+
+  /* MÉTODO DE DESECHO DE CONTROLADORES */
+  @override
+  void dispose() {
+    _controladorCorreo.dispose();
+    super.dispose();
+  }
+  /* FIN MÉTODO DE DESECHO DE CONTROLADORES */
+
+  /* MÉTODO PARA RECUPERAR CONTRASEÑA */
+  void _recuperarContrasenia() {
+    final email = _controladorCorreo.text.trim();
+
+    if (email.isEmpty) {
+      _mostrarSnackBar(
+          "Error. No hay correo para enviar recuperación de contraseña.");
+    }
+
+    ServicioAuth().resetPass(email: email);
+    _mostrarSnackBar("Correo enviado con éxito. Regresa al Inicio de Sesión.");
+  }
+  /* FIN MÉTODO PARA RECUPERAR CONTRASEÑA */
+
+  //ESQUELETO MOSTRAR MENSAJES
+  void _mostrarSnackBar(String mensaje, {bool esError = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensaje, textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        backgroundColor: esError ? Colors.redAccent : Colors.green,
+      ),
+    );
+  }
+
+  //Registro de Usuario
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 4,
+              children: [
+                Column(children: [
+                  Text("Explora CDMX",
+                      style: TextStyle(fontSize: 38, fontWeight: FontWeight.bold)),
+                  Text("Recupera tu Cuenta",
+                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                ]),
+
+                //CAMPOS PARA CORREO Y CONTRASEÑA
+                Container(
+                    padding: EdgeInsets.all(10),
+                    child: Column(children: [
+                      //CAMPO PARA CORREO
+                      TextField(
+                        controller: _controladorCorreo,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                            labelText: 'Correo Electrónico',
+                            border: OutlineInputBorder()),
+                      ),
+                    ]
+                  )
+                ),
+
+                //BOTÓN DE REGISTRO
+                ElevatedButton(
+                  onPressed: _recuperarContrasenia,
+                  style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 80),
+                      backgroundColor: _colorPrincipal_RCS,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      )),
+                  child: Text("Solicitar Cambio de Contraseña",
+                      style: TextStyle(fontSize: 18, color: Colors.white)),
+                )
+              ])),
     );
   }
 }
