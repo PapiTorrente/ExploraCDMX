@@ -94,44 +94,34 @@ class _UsuarioState extends State<Usuario> {
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        UID.toString(),
-                        style: TextStyle(
-                            fontSize: 20
-                        ),
-                      ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    UID.toString(),
+                    style: TextStyle(
+                        fontSize: 20
                     ),
-                    SizedBox(width: 8),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(16),
-                            backgroundColor: _colorPrincipal,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            )
-                        ),
-                        onPressed: (){
-                          Clipboard.setData(ClipboardData(text: UID.toString()));
-                          _mostrarSnackBar("ID copiado al portapapeles.", esError: false);
-                        },
-                        child: Icon(Icons.copy, color: Colors.black),
-                      ),
-                    )
-                  ]
+                  ),
                 ),
-
+                Align(
+                  alignment: Alignment.center,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: _colorPrincipal,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        )
+                    ),
+                    onPressed: (){
+                      Clipboard.setData(ClipboardData(text: UID.toString()));
+                      _mostrarSnackBar("ID copiado al portapapeles.", esError: false);
+                    },
+                    child: Icon(Icons.copy, color: Colors.black, size: 18),
+                  ),
+                )
               ],
             ),
           ),
-
-          SizedBox(height: 8),
 
           Container(
             padding: EdgeInsets.all(3),
@@ -159,8 +149,6 @@ class _UsuarioState extends State<Usuario> {
             ),
           ),
 
-          SizedBox(height: 8),
-
           //BOTÓN PARA REESTABLECER CONTRASEÑA
           ElevatedButton(
             onPressed: () async {
@@ -187,8 +175,6 @@ class _UsuarioState extends State<Usuario> {
             ),
           ),
 
-          SizedBox(height: 8),
-
           //BOTÓN PARA ENVIAR NOTIFICACIÓN (DEBUG)
           /*
           ElevatedButton(
@@ -208,13 +194,9 @@ class _UsuarioState extends State<Usuario> {
                 )
             ),
           ),
-
-          SizedBox(height: 8),
            */
 
           const Divider(),
-
-          SizedBox(height: 8),
 
           Container(
             padding: EdgeInsets.all(3),
@@ -225,8 +207,6 @@ class _UsuarioState extends State<Usuario> {
               ),
             ),
           ),
-
-          SizedBox(height: 8),
 
           //BOTÓN PARA ENVIAR UN CORREO
           ElevatedButton(
@@ -250,11 +230,7 @@ class _UsuarioState extends State<Usuario> {
               )
           ),
 
-          SizedBox(height: 8),
-
           const Divider(),
-
-          SizedBox(height: 8),
 
           //BOTÓN PARA CERRAR SESIÓN
           ElevatedButton(
@@ -288,13 +264,20 @@ class _UsuarioState extends State<Usuario> {
           ElevatedButton(
               onPressed: () async {
                 try {
-                  final eventosUsuario = await FirebaseFirestore.instance.collection('evento').where('uid', isEqualTo: UID).get();
-                  for (var evento in eventosUsuario.docs) {
-                    await evento.reference.delete();
+                  final eventosUsuario = await FirebaseFirestore.instance.collection('eventos').where('uid', isEqualTo: UID).get();
+                  if(eventosUsuario.docs.isNotEmpty){
+                    for (var evento in eventosUsuario.docs) {
+                      await evento.reference.delete();
+                    }
                   }
                   await ServicioAuth().borrarCuenta();
                 } catch (e) {
-                  _mostrarSnackBar("Problemas al borrar cuenta.");
+                  if(e.toString().contains('requires-recent-login') || e.toString().contains('sensitive')){
+                    _mostrarSnackBar("Por seguridad, vuelve a iniciar sesión para borrar tu cuenta.", esError: false);
+                    await ServicioAuth().signOut();
+                  } else {
+                    _mostrarSnackBar("Problemas al borrar cuenta.");
+                  }
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -321,7 +304,7 @@ class _UsuarioState extends State<Usuario> {
           Align(
             alignment: Alignment.center,
             child: Text(
-              "v3.0.3",
+              "v3.0.4",
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,

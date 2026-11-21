@@ -513,7 +513,7 @@ class _PRegistroUsuarioState extends State<PRegistroUsuario> {
             ElevatedButton(
               onPressed: _registroHandler,
               style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 80),
+                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
                   backgroundColor: _colorPrincipal_RUS,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
@@ -611,12 +611,12 @@ class _PRecuperacionCuentaState extends State<PRecuperacionCuenta> {
                 ElevatedButton(
                   onPressed: _recuperarContrasenia,
                   style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 80),
+                      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
                       backgroundColor: _colorPrincipal_RCS,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
                       )),
-                  child: Text("Solicitar Cambio de Contraseña",
+                  child: Text("Cambiar Contraseña",
                       style: TextStyle(fontSize: 18, color: Colors.white)),
                 )
               ])),
