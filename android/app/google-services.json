@@ -38,6 +38,14 @@
           }
         },
         {
+          "client_id": "1028662830128-vlfklp6nt5t20hr0upb994152pmmkmmh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.castilla.exploracdmx",
+            "certificate_hash": "8dc1f88148055a2cf7b7a3755582677bc411081c"
+          }
+        },
+        {
           "client_id": "1028662830128-uu6m0abpfgo196kjtp2pa4cag8gj2i96.apps.googleusercontent.com",
           "client_type": 3
         }
