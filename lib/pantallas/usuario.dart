@@ -304,7 +304,7 @@ class _UsuarioState extends State<Usuario> {
           Align(
             alignment: Alignment.center,
             child: Text(
-              "v3.0.4",
+              "v3.0.5",
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,
